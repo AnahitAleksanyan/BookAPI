@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Diagnostics.HealthChecks;
-using System.Security;
+﻿using System.Security;
 
 namespace WebApplication4.Models
 {
@@ -9,8 +8,5 @@ namespace WebApplication4.Models
         public string Name { get; set; } 
         public string Surname { get; set; }
         public  int Age { get; set; }
-
-
-
     }
 }

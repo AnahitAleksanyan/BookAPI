@@ -1,11 +1,10 @@
 ﻿using WebApplication4.Models;
-
 namespace WebApplication4.Repositories
 {
     public class PersonRepository
     {
 
-        private readonly IEnumerable<Person> people = new List<Person>
+        private readonly List<Person> people = new List<Person>
         {
             new Person()
             {
@@ -39,5 +38,20 @@ namespace WebApplication4.Repositories
                Age = 5
             }
         };
+
+        public IEnumerable<Person> GetPerson()
+        { 
+            return people;
+        }
+
+        public Person? GetePersonById(int Id)
+        {
+            return people.Where(person => person.Id == Id).FirstOrDefault();
+        }
+
+        
+
+
+
     }
 }

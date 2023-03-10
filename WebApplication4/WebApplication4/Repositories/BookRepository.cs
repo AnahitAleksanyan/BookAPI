@@ -56,7 +56,6 @@ namespace WebApplication4.Repositories
             books.Add(book);
             return book;
         }
-
         public bool DeleteBook(int id)
         {
             Book? book = books.Where(book => book.Id == id).FirstOrDefault();
@@ -64,7 +63,6 @@ namespace WebApplication4.Repositories
                 books.Remove(book);
                 return true;
             }
-
             return false;
         }
     }
