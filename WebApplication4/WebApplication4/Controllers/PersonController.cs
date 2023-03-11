@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
+using System.Net;
+using WebApplication4.DTOs;
+using WebApplication4.Exceptions;
 using WebApplication4.Models;
 
 namespace WebApplication4.Controllers
@@ -9,27 +11,48 @@ namespace WebApplication4.Controllers
     [ApiController]
     public class PersonController : ControllerBase
     {
-        [HttpGet("all")]
-        public ActionResult<IEnumerable<Person>> GetAll()
+        [HttpGet]
+        public IEnumerable<Person> GetAll()
         {
-            return Ok(PersonInstanceStorage.personRepository.GetPerson());
+            var result = PersonInstanceStorage.personRepository.GetPeople();
+            Response.StatusCode = 200;
+            return result;
         }
 
-        [HttpGet("by id")]
-        public ActionResult<IEnumerable<Person>> GetById(int id)
+        [HttpGet("{id}")]
+        public ActionResult<Person?> GetById([FromRoute] int id)
         {
-            return PersonInstanceStorage.personRepository.GetPersonById();
+            return PersonInstanceStorage.personRepository.GetPersonById(id);
         }
 
-        [HttpPost("Create")]
+        [HttpPost]
 
-        public ActionResult<Person> Create(Person person)
+        public ActionResult<Person> Create(PersonCreateDTO person)
         {
-            return Create(person);
+            Response.StatusCode = 201;
+            return PersonInstanceStorage.personRepository.CreatePerson(person);
         }
 
-        [HttpDelete("delete")]
+        [HttpPut]
+        [SwaggerResponse(statusCode: 200, type: typeof(Person))]
+        [SwaggerResponse(statusCode: 400, type: typeof(MessageResponse))]
+        public ActionResult<dynamic> Update(PersonUpdateDTO person)
+        {
+            try
+            {
+                var result = PersonInstanceStorage.personRepository.UpdatePerson(person);
+                return result;
+            }
+            catch (InvalidIdException)
+            {
+                return BadRequest(new MessageResponse()
+                {
+                    Message = "Invalid id"
+                });
+            }
+        }
 
+        [HttpDelete]
         public ActionResult<MessageResponse> Delete(int id)
         {
             bool sucsess = PersonInstanceStorage.personRepository.DeletePerson(id);
@@ -49,7 +72,7 @@ namespace WebApplication4.Controllers
             }
         }
 
-       
+
 
 
 

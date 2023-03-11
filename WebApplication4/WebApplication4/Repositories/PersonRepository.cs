@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using WebApplication4.DTOs;
+using WebApplication4.Exceptions;
 using WebApplication4.Models;
 namespace WebApplication4.Repositories
 {
@@ -40,18 +42,27 @@ namespace WebApplication4.Repositories
             }
         };
 
-        public IEnumerable<Person> GetPerson()
+        public IEnumerable<Person> GetPeople()
         {
             return people;
         }
 
         public Person? GetPersonById(int Id)
         {
-            return people.Where(Person => Person.Id == Id).FirstOrDefault();
+            bool Test(Person person)
+            {
+                return person.Id == Id;
+            }
+
+            var filteredList = people.Where(person => person.Id == Id);
+            return filteredList.FirstOrDefault();
         }
 
-        public Person CreatePerson(Person person)
+
+        public Person CreatePerson(PersonCreateDTO personDTO)
         {
+            Person person = personDTO.ToPerson();
+
             int max = people[0].Id;
             foreach (Person item in people)
             {
@@ -65,6 +76,20 @@ namespace WebApplication4.Repositories
             return person;
         }
 
+        public Person UpdatePerson(PersonUpdateDTO personDTO)
+        {
+            Person? person = GetPersonById(personDTO.Id); 
+            if (person != null)
+            {
+                person.Name = personDTO.Name;
+                person.Surname = personDTO.Surname;
+                return person;
+            }
+
+            throw new InvalidIdException();
+
+        }
+
         public bool DeletePerson(int id)
         {
             Person? person = people.Where(Person => Person.Id == id).FirstOrDefault();
@@ -75,11 +100,6 @@ namespace WebApplication4.Repositories
             }
             return false;
 
-        }
-
-        internal ActionResult<IEnumerable<Person>> GetPersonById()
-        {
-            throw new NotImplementedException();
         }
     }
 }
