@@ -4,7 +4,7 @@ using WebApplication4.Exceptions;
 using WebApplication4.Models;
 namespace WebApplication4.Repositories
 {
-    public class PersonRepository
+    public class PersonListRepository
     {
 
         private readonly List<Person> people = new List<Person>

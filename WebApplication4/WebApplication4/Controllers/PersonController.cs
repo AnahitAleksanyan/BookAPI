@@ -4,6 +4,7 @@ using System.Net;
 using WebApplication4.DTOs;
 using WebApplication4.Exceptions;
 using WebApplication4.Models;
+using WebApplication4.Repositories;
 
 namespace WebApplication4.Controllers
 {
@@ -11,10 +12,13 @@ namespace WebApplication4.Controllers
     [ApiController]
     public class PersonController : ControllerBase
     {
+        public readonly IPersonRepository personRepository = PersonInstanceStorage.personListRepository;
+        //public readonly IPersonRepository personRepository = new PersonFileRepository();
+
         [HttpGet]
         public IEnumerable<Person> GetAll()
         {
-            var result = PersonInstanceStorage.personRepository.GetPeople();
+            var result = personRepository.GetPeople();
             Response.StatusCode = 200;
             return result;
         }
@@ -22,7 +26,7 @@ namespace WebApplication4.Controllers
         [HttpGet("{id}")]
         public ActionResult<Person?> GetById([FromRoute] int id)
         {
-            return PersonInstanceStorage.personRepository.GetPersonById(id);
+            return personRepository.GetPersonById(id);
         }
 
         [HttpPost]
@@ -30,7 +34,7 @@ namespace WebApplication4.Controllers
         public ActionResult<Person> Create(PersonCreateDTO person)
         {
             Response.StatusCode = 201;
-            return PersonInstanceStorage.personRepository.CreatePerson(person);
+            return personRepository.CreatePerson(person);
         }
 
         [HttpPut]
@@ -40,7 +44,7 @@ namespace WebApplication4.Controllers
         {
             try
             {
-                var result = PersonInstanceStorage.personRepository.UpdatePerson(person);
+                var result = personRepository.UpdatePerson(person);
                 return result;
             }
             catch (InvalidIdException)
@@ -55,7 +59,7 @@ namespace WebApplication4.Controllers
         [HttpDelete]
         public ActionResult<MessageResponse> Delete(int id)
         {
-            bool sucsess = PersonInstanceStorage.personRepository.DeletePerson(id);
+            bool sucsess = personRepository.DeletePerson(id);
             if (sucsess)
             {
                 return Ok(new MessageResponse
