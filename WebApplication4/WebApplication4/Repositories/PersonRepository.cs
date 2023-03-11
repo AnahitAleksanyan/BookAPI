@@ -1,4 +1,5 @@
-﻿using WebApplication4.Models;
+﻿using Microsoft.AspNetCore.Mvc;
+using WebApplication4.Models;
 namespace WebApplication4.Repositories
 {
     public class PersonRepository
@@ -8,7 +9,7 @@ namespace WebApplication4.Repositories
         {
             new Person()
             {
-               Id =1,
+               Id = 1,
                Name = "Lsine",
                Surname = "Karapetyan",
                Age = 31
@@ -19,9 +20,9 @@ namespace WebApplication4.Repositories
                Id =2,
                Name = "Arshak",
                Surname = "Sarafyan",
-               Age =9
+               Age = 9
             },
-             
+
              new Person()
             {
                Id =3,
@@ -40,18 +41,45 @@ namespace WebApplication4.Repositories
         };
 
         public IEnumerable<Person> GetPerson()
-        { 
+        {
             return people;
         }
 
-        public Person? GetePersonById(int Id)
+        public Person? GetPersonById(int Id)
         {
-            return people.Where(person => person.Id == Id).FirstOrDefault();
+            return people.Where(Person => Person.Id == Id).FirstOrDefault();
         }
 
-        
+        public Person CreatePerson(Person person)
+        {
+            int max = people[0].Id;
+            foreach (Person item in people)
+            {
+                if (item.Id > max)
+                {
+                    max = item.Id;
+                }
+                person.Id = max + 1;
+            }
+            people.Add(person);
+            return person;
+        }
 
+        public bool DeletePerson(int id)
+        {
+            Person? person = people.Where(Person => Person.Id == id).FirstOrDefault();
+            if (person != null)
+            {
+                people.Remove(person);
+                return true;
+            }
+            return false;
 
+        }
 
+        internal ActionResult<IEnumerable<Person>> GetPersonById()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
