@@ -1,7 +1,8 @@
 ﻿using WebApplication4.DTOs;
 using WebApplication4.Models;
+using WebApplication4.Repositories.Interfaces;
 
-namespace WebApplication4.Repositories
+namespace WebApplication4.Repositories.Implemetations
 {
     public class PersonFileRepository : IPersonRepository
     {
@@ -11,6 +12,11 @@ namespace WebApplication4.Repositories
         }
 
         public bool DeletePerson(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Exists(int id)
         {
             throw new NotImplementedException();
         }

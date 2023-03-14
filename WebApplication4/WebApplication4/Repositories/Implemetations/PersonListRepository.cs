@@ -1,12 +1,13 @@
-﻿ using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using WebApplication4.DTOs;
 using WebApplication4.Exceptions;
 using WebApplication4.Models;
-namespace WebApplication4.Repositories
+using WebApplication4.Repositories.Interfaces;
+
+namespace WebApplication4.Repositories.Implemetations
 {
     public class PersonListRepository : IPersonRepository
     {
-
         private readonly List<Person> people = new List<Person>
         {
             new Person()
@@ -73,12 +74,12 @@ namespace WebApplication4.Repositories
                 person.Id = max + 1;
             }
             people.Add(person);
-            return person; 
+            return person;
         }
 
         public Person UpdatePerson(PersonUpdateDTO personDTO)
         {
-            Person? person = GetPersonById(personDTO.Id); 
+            Person? person = GetPersonById(personDTO.Id);
             if (person != null)
             {
                 person.Name = personDTO.Name;
@@ -100,6 +101,11 @@ namespace WebApplication4.Repositories
             }
             return false;
 
+        }
+
+        public bool Exists(int id)
+        {
+            return people.Any(person => person.Id == id);
         }
     }
 }

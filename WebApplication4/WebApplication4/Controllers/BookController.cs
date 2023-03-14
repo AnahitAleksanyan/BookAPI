@@ -1,8 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 using System.ComponentModel.DataAnnotations;
 using WebApplication4.DTOs;
+using WebApplication4.Exceptions;
 using WebApplication4.Models;
-using WebApplication4.Repositories;
+using WebApplication4.Repositories.Interfaces;
+using WebApplication4.Services.Interfaces;
 
 namespace WebApplication4.Controllers
 {
@@ -10,28 +13,46 @@ namespace WebApplication4.Controllers
     [ApiController]
     public class BookController : ControllerBase
     {
-        [HttpGet("all")]
+        private readonly IBookService _bookService;
+
+        public BookController(IBookService bookRepository)
+        {
+            _bookService = bookRepository;
+        }
+
+        [HttpGet]
         public ActionResult<IEnumerable<Book>> GetAll()
         {
-            return Ok(BookInstanceStorage.bookRepository.GetBooks());
+            return Ok(_bookService.GetBooks());
         }
 
-        [HttpGet("byId")]
-        public ActionResult<Book?> GetById([FromQuery][Required] int id)
+        [HttpGet("{id}")]
+        public ActionResult<Book?> GetById([FromRoute][Required] int id)
         {
-            return BookInstanceStorage.bookRepository.GetBookById(id);
+            return _bookService.GetBookById(id);
         }
 
-        [HttpPost("create")]
-        public ActionResult<Book> Create([FromBody][Required] Book book)
+        [HttpPost]
+        public ActionResult<object> Create([FromBody][Required] BookCreateDTO book)
         {
-            return Created("", BookInstanceStorage.bookRepository.CreateBook(book));
+            try
+            {
+                return Created("", _bookService.CreateBook(book));
+            }
+            catch (CustomValidationException ex)
+            {
+                Response.StatusCode = 400;
+                return new MessageResponse()
+                {
+                    Message = ex.Message,
+                };
+            }
         }
 
-        [HttpDelete("delete")]
+        [HttpDelete]
         public ActionResult<MessageResponse> Delete([FromQuery][Required] int id)
         {
-            bool success = BookInstanceStorage.bookRepository.DeleteBook(id);
+            bool success = _bookService.DeleteBook(id);
             if (success)
             {
                 return Ok(new MessageResponse()
@@ -49,10 +70,42 @@ namespace WebApplication4.Controllers
         }
 
         [HttpPut]
-        public ActionResult <Book> Update(BookUpdateDTO book)
+        [SwaggerResponse(statusCode: 200, type: typeof(Book))]
+        [SwaggerResponse(statusCode: 400, type: typeof(MessageResponse))]
+        public ActionResult<object> Update(BookUpdateDTO book)
         {
-            var result = BookRepository.UpdateBook();
-            return result;
+            try
+            {
+                var result = _bookService.UpdateBook(book);
+                return result;
+            }
+            catch (InvalidIdException)
+            {
+                Response.StatusCode = 400;
+                return new MessageResponse()
+                {
+                    Message = "Id is invalid"
+                };
+            }
+
+        }
+
+        [HttpGet("person/{id}")]
+        [SwaggerResponse(statusCode: 200, type:typeof(IEnumerable<Book>))]
+        [SwaggerResponse(statusCode: 400, type:typeof(MessageResponse))]
+        public ActionResult<object> GetAll([FromRoute][Required] int id)
+        {
+            try
+            {
+                return Created("", _bookService.GetBooksByAuthor(id));
+            }
+            catch (CustomValidationException ex)
+            {
+                return BadRequest(new MessageResponse()
+                {
+                    Message = ex.Message,
+                });
+            }
         }
     }
 }

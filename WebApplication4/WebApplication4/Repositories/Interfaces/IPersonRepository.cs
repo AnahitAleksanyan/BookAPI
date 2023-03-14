@@ -1,7 +1,7 @@
 ﻿using WebApplication4.DTOs;
 using WebApplication4.Models;
 
-namespace WebApplication4.Repositories
+namespace WebApplication4.Repositories.Interfaces
 {
     public interface IPersonRepository
     {
@@ -10,5 +10,6 @@ namespace WebApplication4.Repositories
         Person CreatePerson(PersonCreateDTO personDTO);
         Person UpdatePerson(PersonUpdateDTO personDTO);
         bool DeletePerson(int id);
+        bool Exists(int id);
     }
 }

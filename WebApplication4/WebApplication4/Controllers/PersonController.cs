@@ -4,7 +4,7 @@ using System.Net;
 using WebApplication4.DTOs;
 using WebApplication4.Exceptions;
 using WebApplication4.Models;
-using WebApplication4.Repositories;
+using WebApplication4.Repositories.Interfaces;
 
 namespace WebApplication4.Controllers
 {
@@ -12,13 +12,17 @@ namespace WebApplication4.Controllers
     [ApiController]
     public class PersonController : ControllerBase
     {
-        //public readonly IPersonRepository personRepository = PersonInstanceStorage.personListRepository;
-        public readonly IPersonRepository personRepository = new PersonFileRepository();
+        private readonly IPersonRepository _personRepository;
+
+        public PersonController(IPersonRepository personRepository)
+        {
+            _personRepository = personRepository;
+        }
 
         [HttpGet]
         public IEnumerable<Person> GetAll() 
         {
-            var result = personRepository.GetPeople();
+            var result = _personRepository.GetPeople();
             Response.StatusCode = 200;
             return result;
         }
@@ -26,7 +30,7 @@ namespace WebApplication4.Controllers
         [HttpGet("{id}")]
         public ActionResult<Person?> GetById([FromRoute] int id)
         {
-            return personRepository.GetPersonById(id);
+            return _personRepository.GetPersonById(id);
         }
 
         [HttpPost]
@@ -34,7 +38,7 @@ namespace WebApplication4.Controllers
         public ActionResult<Person> Create(PersonCreateDTO person)
         {
             Response.StatusCode = 201;
-            return personRepository.CreatePerson(person);
+            return _personRepository.CreatePerson(person);
         }
 
         [HttpPut]
@@ -44,7 +48,7 @@ namespace WebApplication4.Controllers
         {
             try
             {
-                var result = personRepository.UpdatePerson(person);
+                var result = _personRepository.UpdatePerson(person);
                 return result;
             }
             catch (InvalidIdException)
@@ -59,7 +63,7 @@ namespace WebApplication4.Controllers
         [HttpDelete]
         public ActionResult<MessageResponse> Delete(int id)
         {
-            bool sucsess = personRepository.DeletePerson(id);
+            bool sucsess = _personRepository.DeletePerson(id);
             if (sucsess)
             {
                 return Ok(new MessageResponse

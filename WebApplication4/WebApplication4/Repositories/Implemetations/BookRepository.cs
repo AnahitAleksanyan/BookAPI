@@ -1,8 +1,9 @@
 ﻿using WebApplication4.DTOs;
 using WebApplication4.Exceptions;
 using WebApplication4.Models;
+using WebApplication4.Repositories.Interfaces;
 
-namespace WebApplication4.Repositories
+namespace WebApplication4.Repositories.Implemetations
 {
     public class BookRepository : IBookRepository
     {
@@ -43,20 +44,22 @@ namespace WebApplication4.Repositories
             return books.Where(book => book.Id == id).FirstOrDefault();
         }
 
-        public Book CreateBook(BookCreateDTO bookDTO) 
+        public Book CreateBook(BookCreateDTO bookDTO)
         {
+            var book = bookDTO.ToBook();
             int max = books[0].Id;
             foreach (var item in books)
             {
-                if (item.Id > max) { 
+                if (item.Id > max)
+                {
                     max = item.Id;
                 }
             }
 
-            bookDTO.Id = max + 1;
+            book.Id = max + 1;
 
-            books.Add(bookDTO);
-            return bookDTO;  // stex harc unim???
+            books.Add(book);
+            return book;
         }
 
         public Book UpdateBook(BookUpdateDTO bookDTO)
@@ -65,7 +68,7 @@ namespace WebApplication4.Repositories
 
             if (book != null)
             {
-                 book.Name = bookDTO.Name;
+                book.Name = bookDTO.Name;
                 book.Description = bookDTO.Description;
                 book.PageCount = bookDTO.PageCount;
                 return book;
@@ -73,19 +76,25 @@ namespace WebApplication4.Repositories
             else
             {
                 throw new InvalidIdException();
-            }       
+            }
 
         }
-      
+
         public bool DeleteBook(int id)
         {
             Book? book = books.Where(book => book.Id == id).FirstOrDefault();
-            if (book != null) {
+            if (book != null)
+            {
                 books.Remove(book);
                 return true;
             }
-          
+
             return false;
+        }
+
+        public IEnumerable<Book> GetBooksByAuthor(int authorId)
+        {
+            return books.Where(book => book.AuthorId == authorId);
         }
     }
 }

@@ -9,18 +9,17 @@ namespace WebApplication4.DTOs
         public string Description { get; set; }
         public int PageCount { get; set; }
 
+        public Book ToBook()
+        {
+            Book book = new Book()
+            {
+                Id = this.Id,
+                Name = this.Name,
+                Description = this.Description,
+                PageCount = this.PageCount
+            };
+            return book;
+        }
+
     }
-
-
-    public Book ToBook()
-    {
-        Book book = new Book();
-        book.Id = Id;
-        book.Name = Name;
-        book.Description = Description;
-        book.PageCount = PageCount;
-        return book;
-    }
-
-
 }
