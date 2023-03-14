@@ -1,10 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿ using Microsoft.AspNetCore.Mvc;
 using WebApplication4.DTOs;
 using WebApplication4.Exceptions;
 using WebApplication4.Models;
 namespace WebApplication4.Repositories
 {
-    public class PersonListRepository
+    public class PersonListRepository : IPersonRepository
     {
 
         private readonly List<Person> people = new List<Person>
@@ -12,7 +12,7 @@ namespace WebApplication4.Repositories
             new Person()
             {
                Id = 1,
-               Name = "Lsine",
+               Name = "Lusine",
                Surname = "Karapetyan",
                Age = 31
             },
@@ -73,7 +73,7 @@ namespace WebApplication4.Repositories
                 person.Id = max + 1;
             }
             people.Add(person);
-            return person;
+            return person; 
         }
 
         public Person UpdatePerson(PersonUpdateDTO personDTO)

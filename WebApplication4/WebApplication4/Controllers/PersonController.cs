@@ -12,11 +12,11 @@ namespace WebApplication4.Controllers
     [ApiController]
     public class PersonController : ControllerBase
     {
-        public readonly IPersonRepository personRepository = PersonInstanceStorage.personListRepository;
-        //public readonly IPersonRepository personRepository = new PersonFileRepository();
+        //public readonly IPersonRepository personRepository = PersonInstanceStorage.personListRepository;
+        public readonly IPersonRepository personRepository = new PersonFileRepository();
 
         [HttpGet]
-        public IEnumerable<Person> GetAll()
+        public IEnumerable<Person> GetAll() 
         {
             var result = personRepository.GetPeople();
             Response.StatusCode = 200;

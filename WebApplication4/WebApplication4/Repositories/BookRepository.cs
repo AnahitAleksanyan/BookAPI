@@ -1,8 +1,10 @@
-﻿   using WebApplication4.Models;
+﻿using WebApplication4.DTOs;
+using WebApplication4.Exceptions;
+using WebApplication4.Models;
 
 namespace WebApplication4.Repositories
 {
-    public class BookRepository
+    public class BookRepository : IBookRepository
     {
         private readonly List<Book> books = new List<Book>{
             new Book()
@@ -41,7 +43,7 @@ namespace WebApplication4.Repositories
             return books.Where(book => book.Id == id).FirstOrDefault();
         }
 
-        public Book CreateBook(Book book) 
+        public Book CreateBook(BookCreateDTO bookDTO) 
         {
             int max = books[0].Id;
             foreach (var item in books)
@@ -51,11 +53,30 @@ namespace WebApplication4.Repositories
                 }
             }
 
-            book.Id = max + 1;
+            bookDTO.Id = max + 1;
 
-            books.Add(book);
-            return book;
+            books.Add(bookDTO);
+            return bookDTO;  // stex harc unim???
         }
+
+        public Book UpdateBook(BookUpdateDTO bookDTO)
+        {
+            Book? book = GetBookById(bookDTO.Id);
+
+            if (book != null)
+            {
+                 book.Name = bookDTO.Name;
+                book.Description = bookDTO.Description;
+                book.PageCount = bookDTO.PageCount;
+                return book;
+            }
+            else
+            {
+                throw new InvalidIdException();
+            }       
+
+        }
+      
         public bool DeleteBook(int id)
         {
             Book? book = books.Where(book => book.Id == id).FirstOrDefault();
@@ -63,6 +84,7 @@ namespace WebApplication4.Repositories
                 books.Remove(book);
                 return true;
             }
+          
             return false;
         }
     }
