@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
+using WebApplication4.DTOs;
 using WebApplication4.Models;
+using WebApplication4.Repositories;
 
 namespace WebApplication4.Controllers
 {
@@ -44,6 +46,13 @@ namespace WebApplication4.Controllers
                     Message = "Couldn't delete the book"
                 });
             }
+        }
+
+        [HttpPut]
+        public ActionResult <Book> Update(BookUpdateDTO book)
+        {
+            var result = BookRepository.UpdateBook();
+            return result;
         }
     }
 }
