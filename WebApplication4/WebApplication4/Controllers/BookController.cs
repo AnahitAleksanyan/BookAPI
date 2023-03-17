@@ -15,9 +15,9 @@ namespace WebApplication4.Controllers
     {
         private readonly IBookService _bookService;
 
-        public BookController(IBookService bookRepository)
+        public BookController(IBookService bookService)
         {
-            _bookService = bookRepository;
+            _bookService = bookService;
         }
 
         [HttpGet]
@@ -68,6 +68,35 @@ namespace WebApplication4.Controllers
                 });
             }
         }
+        [HttpDelete("all")]
+        public ActionResult<MessageResponse> DeleteAllBooksByAuthorId(int authorId)
+        {
+            bool IsDeleted = _bookService.DeleteAllBooksByAuthorId(authorId);
+            try
+            {
+                if (IsDeleted)
+                {
+                    return Ok(new MessageResponse
+                    {
+                        Message = "deleted all books"
+                    });
+                }
+                else
+                {
+                    return BadRequest(new MessageResponse
+                    {
+                        Message = "Couldn't delete the books"
+                    });
+                }
+            }
+            catch (Exception)
+            {
+                return new MessageResponse
+                {
+                    Message = "Invalid Id"
+                };
+            }
+        }
 
         [HttpPut]
         [SwaggerResponse(statusCode: 200, type: typeof(Book))]
@@ -87,12 +116,11 @@ namespace WebApplication4.Controllers
                     Message = "Id is invalid"
                 };
             }
-
         }
 
         [HttpGet("person/{id}")]
-        [SwaggerResponse(statusCode: 200, type:typeof(IEnumerable<Book>))]
-        [SwaggerResponse(statusCode: 400, type:typeof(MessageResponse))]
+        [SwaggerResponse(statusCode: 200, type: typeof(IEnumerable<Book>))]
+        [SwaggerResponse(statusCode: 400, type: typeof(MessageResponse))]
         public ActionResult<object> GetAll([FromRoute][Required] int id)
         {
             try
@@ -109,3 +137,4 @@ namespace WebApplication4.Controllers
         }
     }
 }
+

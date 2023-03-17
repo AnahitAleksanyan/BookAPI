@@ -11,5 +11,6 @@ namespace WebApplication4.Repositories.Interfaces
         Book UpdateBook(BookUpdateDTO bookDTO);
         bool DeleteBook(int id);
         IEnumerable<Book> GetBooksByAuthor(int authorId);
+        bool DeleteAllBooksByAuthorId(int authorId);
     }
 }

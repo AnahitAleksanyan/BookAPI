@@ -1,4 +1,5 @@
-﻿using WebApplication4.DTOs;
+﻿using System.Collections.Generic;
+using WebApplication4.DTOs;
 using WebApplication4.Exceptions;
 using WebApplication4.Models;
 using WebApplication4.Repositories.Interfaces;
@@ -92,9 +93,24 @@ namespace WebApplication4.Repositories.Implemetations
             return false;
         }
 
+
         public IEnumerable<Book> GetBooksByAuthor(int authorId)
         {
             return books.Where(book => book.AuthorId == authorId);
         }
+
+        public bool DeleteAllBooksByAuthorId(int authorId)
+        {
+            IEnumerable<Book> books = GetBooksByAuthor(authorId);
+
+            var bk = books.ToList();
+            foreach (Book book in bk)
+            {
+                bk.Remove(book);
+                return true;
+            }
+            return false;
+        }
+
     }
 }

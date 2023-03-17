@@ -57,6 +57,12 @@ namespace WebApplication4.Services.Implementations
 
         public Book UpdateBook(BookUpdateDTO bookDTO)
         {
+
+            if (bookDTO.Id < 0)
+            {
+                throw new InvalidIdException();
+            }
+
             return _bookRepository.UpdateBook(bookDTO);
         }
 
@@ -64,6 +70,19 @@ namespace WebApplication4.Services.Implementations
         {
             ValidateAuthor(authorId);
             return _bookRepository.GetBooksByAuthor(authorId);
+        }
+
+        public bool DeleteAllBooksByAuthorId(int authorId)
+        {
+            if (authorId <= 0)
+            {
+                throw new InvalidIdException();
+            }
+            else
+            {
+               _bookRepository.DeleteAllBooksByAuthorId(authorId);
+            }
+            return true;
         }
     }
 }

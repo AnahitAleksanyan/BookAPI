@@ -5,6 +5,7 @@ using WebApplication4.DTOs;
 using WebApplication4.Exceptions;
 using WebApplication4.Models;
 using WebApplication4.Repositories.Interfaces;
+using WebApplication4.Services.Interfaces;
 
 namespace WebApplication4.Controllers
 {
@@ -12,17 +13,17 @@ namespace WebApplication4.Controllers
     [ApiController]
     public class PersonController : ControllerBase
     {
-        private readonly IPersonRepository _personRepository;
+        private readonly IPersonService _personService;
 
-        public PersonController(IPersonRepository personRepository)
+        public PersonController(IPersonService personService)
         {
-            _personRepository = personRepository;
+            _personService = personService;    //stex harc unim 
         }
 
         [HttpGet]
-        public IEnumerable<Person> GetAll() 
+        public IEnumerable<Person> GetAll()
         {
-            var result = _personRepository.GetPeople();
+            var result = _personService.GetPeople();
             Response.StatusCode = 200;
             return result;
         }
@@ -30,15 +31,26 @@ namespace WebApplication4.Controllers
         [HttpGet("{id}")]
         public ActionResult<Person?> GetById([FromRoute] int id)
         {
-            return _personRepository.GetPersonById(id);
+            return _personService.GetPersonById(id);
         }
 
         [HttpPost]
 
-        public ActionResult<Person> Create(PersonCreateDTO person)
+        [SwaggerResponse(statusCode: 201, type:typeof(Person))]
+        [SwaggerResponse(statusCode: 400, type: typeof(MessageResponse))]
+        public ActionResult<dynamic> Create(PersonCreateDTO person)
         {
-            Response.StatusCode = 201;
-            return _personRepository.CreatePerson(person);
+            try
+            {              
+                return _personService.CreatePerson(person);
+            }
+            catch (InvalidIdException)
+            {
+                return BadRequest(new MessageResponse
+                {
+                    Message = "invalid Id"
+                });
+            }
         }
 
         [HttpPut]
@@ -48,7 +60,7 @@ namespace WebApplication4.Controllers
         {
             try
             {
-                var result = _personRepository.UpdatePerson(person);
+                var result = _personService.UpdatePerson(person);
                 return result;
             }
             catch (InvalidIdException)
@@ -60,10 +72,10 @@ namespace WebApplication4.Controllers
             }
         }
 
-        [HttpDelete]
+        [HttpDelete]        
         public ActionResult<MessageResponse> Delete(int id)
         {
-            bool sucsess = _personRepository.DeletePerson(id);
+            bool sucsess = _personService.DeletePerson(id);
             if (sucsess)
             {
                 return Ok(new MessageResponse
