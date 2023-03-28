@@ -5,11 +5,11 @@ namespace WebApplication4.Repositories.Interfaces
 {
     public interface IPersonRepository
     {
-        IEnumerable<Person> GetPeople();
-        Person? GetPersonById(int id);
-        Person CreatePerson(PersonCreateDTO personDTO);
-        Person UpdatePerson(PersonUpdateDTO personDTO);
-        bool DeletePerson(int id);
-        bool Exists(int id);
+        Task<IEnumerable<Person>> GetPeople();
+        Task<Person?> GetPersonById(int id);
+        Task<Person> CreatePerson(PersonCreateDTO personDTO);
+        Task<Person> UpdatePerson(PersonUpdateDTO personDTO);
+        Task<bool> DeletePerson(int id);
+        Task<bool> Exists(int id);
     }
 }

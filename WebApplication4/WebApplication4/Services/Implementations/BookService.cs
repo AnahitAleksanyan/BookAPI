@@ -10,69 +10,87 @@ namespace WebApplication4.Services.Implementations
 {
     public class BookService : IBookService
     {
-        private readonly IBookRepository _bookRepository;
-        private readonly IPersonRepository _personRepository;
-        public BookService(IBookRepository bookRepository, IPersonRepository personRepository)
+        private readonly IBookRepository _bookSQLRepository;
+        private readonly IPersonRepository _personSQLRepository;
+
+        public BookService(IBookRepository bookSQLRepository, IPersonRepository personSQLRepository)
         {
-            _bookRepository = bookRepository;
-            _personRepository = personRepository;
+            _bookSQLRepository = bookSQLRepository;
+            _personSQLRepository = personSQLRepository;
 
         }
-        public Book CreateBook(BookCreateDTO bookDTO)
+        public async Task<Book> CreateBook(BookCreateDTO bookDTO)
         {
             if (bookDTO.Name == null || bookDTO.Name.Length < 2)
             {
                 throw new CustomValidationException("Book name must has at least 2 character");
             }
 
-            ValidateAuthor(bookDTO.AuthorId);
+           await  ValidateAuthor(bookDTO.AuthorId);
 
-            return _bookRepository.CreateBook(bookDTO);
+             var  result = await _bookSQLRepository.CreateBook(bookDTO);
+            return result;
+                     
+
         }
 
-        private void ValidateAuthor(int authorId)
+        private async Task<bool> ValidateAuthor(int authorId)
         {
-            bool exists = _personRepository.Exists(authorId);
+            bool exists =await _personSQLRepository.Exists(authorId);
 
             if (!exists)
             {
                 throw new CustomValidationException("Author id is invalid. Couldn't find person with specified author id.");
             }
+            return true;
         }
 
-        public bool DeleteBook(int id)
+        public async Task<bool> DeleteBook(int id)
         {
-            return _bookRepository.DeleteBook(id);
+           return await _bookSQLRepository.DeleteBook(id);
+
         }
 
-        public Book? GetBookById(int id)
+        public async Task<Book?> GetBookById(int id)
         {
-            return _bookRepository.GetBookById(id);
+            return await _bookSQLRepository.GetBookById(id);
         }
 
-        public IEnumerable<Book> GetBooks()
+        public async Task<IEnumerable<Book>> GetBooks()
         {
-            return _bookRepository.GetBooks();
-        }
+            return await _bookSQLRepository.GetBooks();
+       }
+              
 
-        public Book UpdateBook(BookUpdateDTO bookDTO)
+        public async Task<Book> UpdateBook(BookUpdateDTO bookDTO)
         {
-
-            if (bookDTO.Id < 0)
+            if (_bookSQLRepository.Exist(bookDTO.Id) == null)
             {
-                throw new InvalidIdException();
+                throw new CustomValidationException("the book is not exist");
+            };
+
+            if (bookDTO.Name == null || bookDTO.Name.Length < 2)
+            {
+                throw new CustomValidationException("Invalid name");
             }
 
-            return _bookRepository.UpdateBook(bookDTO);
+            if (bookDTO.PageCount < 0)
+            {
+                throw new CustomValidationException("Invalid PageCount");
+
+            }
+
+
+            return await _bookSQLRepository.UpdateBook(bookDTO);
         }
 
-        public IEnumerable<Book> GetBooksByAuthor(int authorId)
+        public async Task <IEnumerable<Book>> GetBooksByAuthor(int authorId)
         {
-            ValidateAuthor(authorId);
-            return _bookRepository.GetBooksByAuthor(authorId);
+           await ValidateAuthor(authorId);
+            return await _bookSQLRepository.GetBooksByAuthor(authorId);
         }
 
-        public bool DeleteAllBooksByAuthorId(int authorId)
+        public async Task<bool> DeleteAllBooksByAuthorId(int authorId)
         {
             if (authorId <= 0)
             {
@@ -80,9 +98,11 @@ namespace WebApplication4.Services.Implementations
             }
             else
             {
-               _bookRepository.DeleteAllBooksByAuthorId(authorId);
+               await _bookSQLRepository.DeleteAllBooksByAuthorId(authorId);
             }
             return true;
+           
         }
+
     }
 }

@@ -15,10 +15,11 @@ namespace WebApplication4.Controllers
     {
         private readonly IBookService _bookService;
 
-        public BookController(IBookService bookService)
+        public BookController( IBookService bookService)
         {
             _bookService = bookService;
         }
+
 
         [HttpGet]
         public ActionResult<IEnumerable<Book>> GetAll()
@@ -27,17 +28,17 @@ namespace WebApplication4.Controllers
         }
 
         [HttpGet("{id}")]
-        public ActionResult<Book?> GetById([FromRoute][Required] int id)
+        public async Task<ActionResult<Book?>> GetById([FromRoute][Required] int id)
         {
-            return _bookService.GetBookById(id);
+            return await _bookService.GetBookById(id);
         }
 
         [HttpPost]
-        public ActionResult<object> Create([FromBody][Required] BookCreateDTO book)
+        public async Task<ActionResult<object>> Create([FromBody][Required] BookCreateDTO book)
         {
             try
             {
-                return Created("", _bookService.CreateBook(book));
+                return Created("", await _bookService.CreateBook(book));
             }
             catch (CustomValidationException ex)
             {
@@ -50,9 +51,10 @@ namespace WebApplication4.Controllers
         }
 
         [HttpDelete]
-        public ActionResult<MessageResponse> Delete([FromQuery][Required] int id)
+        public async Task<ActionResult<MessageResponse>> Delete([FromQuery][Required] int id)
+
         {
-            bool success = _bookService.DeleteBook(id);
+            bool success = await  _bookService.DeleteBook(id);
             if (success)
             {
                 return Ok(new MessageResponse()
@@ -69,9 +71,9 @@ namespace WebApplication4.Controllers
             }
         }
         [HttpDelete("all")]
-        public ActionResult<MessageResponse> DeleteAllBooksByAuthorId(int authorId)
+        public async Task<ActionResult<MessageResponse>> DeleteAllBooksByAuthorId(int authorId)
         {
-            bool IsDeleted = _bookService.DeleteAllBooksByAuthorId(authorId);
+            bool IsDeleted =  await _bookService.DeleteAllBooksByAuthorId(authorId);
             try
             {
                 if (IsDeleted)
@@ -101,11 +103,11 @@ namespace WebApplication4.Controllers
         [HttpPut]
         [SwaggerResponse(statusCode: 200, type: typeof(Book))]
         [SwaggerResponse(statusCode: 400, type: typeof(MessageResponse))]
-        public ActionResult<object> Update(BookUpdateDTO book)
+        public async Task<ActionResult<object>> Update(BookUpdateDTO book)
         {
             try
             {
-                var result = _bookService.UpdateBook(book);
+                var result = await _bookService.UpdateBook(book);
                 return result;
             }
             catch (InvalidIdException)
@@ -121,11 +123,11 @@ namespace WebApplication4.Controllers
         [HttpGet("person/{id}")]
         [SwaggerResponse(statusCode: 200, type: typeof(IEnumerable<Book>))]
         [SwaggerResponse(statusCode: 400, type: typeof(MessageResponse))]
-        public ActionResult<object> GetAll([FromRoute][Required] int id)
+        public async Task<ActionResult<object>> GetAll([FromRoute][Required] int id)
         {
             try
             {
-                return Created("", _bookService.GetBooksByAuthor(id));
+                return Created("",await _bookService.GetBooksByAuthor(id));
             }
             catch (CustomValidationException ex)
             {

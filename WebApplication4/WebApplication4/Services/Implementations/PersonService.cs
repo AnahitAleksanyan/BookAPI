@@ -14,47 +14,98 @@ namespace WebApplication4.Services.Implementations
         private readonly IBookRepository _bookRepository;
         private readonly IPersonRepository _personRepository;
 
-        public PersonService(IBookRepository bookReposirory, IPersonRepository personRepository)
+        public PersonService(IBookRepository bookRepository, IPersonRepository personRepository)
         {
-            _bookRepository = bookReposirory;
+            _bookRepository = bookRepository;
             _personRepository = personRepository;
         }
-              
-
-        public Person CreatePerson(PersonCreateDTO personDTO)
+            
+        private void ValidateNameAndSurname(in string name, in string surname)
         {
-            Person person = personDTO.ToPerson();
-            if (personDTO.Id <= 0)
+            if (name == null || name.Length < 2)
+            {
+                throw new CustomValidationException("invalid Name");
+            }
+
+            if (surname == null || surname.Length < 3)
+            {
+                throw new CustomValidationException("Invalid Surname");
+            }
+
+        }
+
+        public async Task<Person> CreatePerson(PersonCreateDTO personDTO)
+        {
+            ValidateNameAndSurname(personDTO.Name, personDTO.Surname);
+            
+            if (personDTO.Age < 5 || personDTO.Age > 100)
+            {
+                throw new CustomValidationException("invalid Age");
+            }
+
+            Person person =  personDTO.ToPerson();
+            return person;
+        }
+
+        public async Task<Person> UpdatePerson(PersonUpdateDTO personDTO)
+        {
+            if (personDTO.Id <= 0 )
             {
                 throw new InvalidIdException();
             }
+            ValidateNameAndSurname(personDTO.Name, personDTO.Surname);
+
+            Person person = personDTO.ToPerson();
             return person;
+        }
+
+        public async Task<bool> DeletePerson(int id)
+        {
+            if (id <= 0)
+            {
+                throw new InvalidIdException();
+            }
+            else
+            {
+                await _personRepository.DeletePerson(id);
+
+                return true;
+
+            }
+        }
+
+        public async Task<bool> Exists(int id)
+        {
+            if (id <= 0)
+            {
+                throw new InvalidIdException();
+            }
+            else
+            {
+                await _personRepository.Exists(id);
+                return true;
+            }
            
         }
 
-        public bool DeletePerson(int id)
+        public async Task<IEnumerable<Person>> GetPeople()
         {
-            throw new NotImplementedException();
+           return await _personRepository.GetPeople();
         }
 
-        public bool Exists(int id)
+        public async Task<Person?> GetPersonById(int id)
         {
-            throw new NotImplementedException();
+            if (id <= 0)
+            {
+                throw new InvalidIdException();
+            }
+            else
+            {
+               await  _personRepository.GetPersonById(id);
+            }
+            return null;
         }
 
-        public IEnumerable<Person> GetPeople()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Person? GetPersonById(int id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Person UpdatePerson(PersonUpdateDTO personDTO)
-        {
-            throw new NotImplementedException();
-        }
+       
     }
 }

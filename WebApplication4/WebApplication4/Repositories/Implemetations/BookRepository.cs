@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Reflection.Metadata.Ecma335;
 using WebApplication4.DTOs;
 using WebApplication4.Exceptions;
 using WebApplication4.Models;
@@ -7,7 +9,7 @@ using WebApplication4.Repositories.Interfaces;
 namespace WebApplication4.Repositories.Implemetations
 {
     public class BookRepository : IBookRepository
-    {
+    {       
         private readonly List<Book> books = new List<Book>{
             new Book()
             {
@@ -34,18 +36,19 @@ namespace WebApplication4.Repositories.Implemetations
                 CreatedDate = new DateTime(1996,05,30)
             }
         };
-
-        public IEnumerable<Book> GetBooks()
+         
+        public async Task<IEnumerable<Book>> GetBooks()
         {
-            return books;
+           return books;    //stex harc unim))
         }
 
-        public Book? GetBookById(int id)
+        public async Task<Book?> GetBookById(int id)
         {
-            return books.Where(book => book.Id == id).FirstOrDefault();
+            var book =books.Where(book => book.Id == id).FirstOrDefault();
+            return book;
         }
 
-        public Book CreateBook(BookCreateDTO bookDTO)
+        public async Task<Book> CreateBook(BookCreateDTO bookDTO)
         {
             var book = bookDTO.ToBook();
             int max = books[0].Id;
@@ -63,9 +66,9 @@ namespace WebApplication4.Repositories.Implemetations
             return book;
         }
 
-        public Book UpdateBook(BookUpdateDTO bookDTO)
+        public async Task<Book> UpdateBook(BookUpdateDTO bookDTO)
         {
-            Book? book = GetBookById(bookDTO.Id);
+            Book? book = await GetBookById(bookDTO.Id);
 
             if (book != null)
             {
@@ -81,7 +84,7 @@ namespace WebApplication4.Repositories.Implemetations
 
         }
 
-        public bool DeleteBook(int id)
+        public async  Task<bool> DeleteBook(int id)
         {
             Book? book = books.Where(book => book.Id == id).FirstOrDefault();
             if (book != null)
@@ -94,14 +97,14 @@ namespace WebApplication4.Repositories.Implemetations
         }
 
 
-        public IEnumerable<Book> GetBooksByAuthor(int authorId)
+        public async Task<IEnumerable<Book>> GetBooksByAuthor(int authorId)
         {
-            return books.Where(book => book.AuthorId == authorId);
+            return  books.Where(book => book.AuthorId == authorId);
         }
 
-        public bool DeleteAllBooksByAuthorId(int authorId)
+        public async Task<bool> DeleteAllBooksByAuthorId(int authorId)
         {
-            IEnumerable<Book> books = GetBooksByAuthor(authorId);
+            IEnumerable<Book> books =await  GetBooksByAuthor(authorId);
 
             var bk = books.ToList();
             foreach (Book book in bk)
@@ -112,5 +115,9 @@ namespace WebApplication4.Repositories.Implemetations
             return false;
         }
 
+        public async Task<bool> Exist(int id)
+        {
+            return books.Any(book => book.Id == id);
+        }
     }
 }

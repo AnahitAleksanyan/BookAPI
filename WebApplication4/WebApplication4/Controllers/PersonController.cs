@@ -17,32 +17,32 @@ namespace WebApplication4.Controllers
 
         public PersonController(IPersonService personService)
         {
-            _personService = personService;    //stex harc unim 
+            _personService = personService;    
         }
 
         [HttpGet]
-        public IEnumerable<Person> GetAll()
+        public async Task< IEnumerable<Person>> GetAll()
         {
-            var result = _personService.GetPeople();
+            var result = await _personService.GetPeople();
             Response.StatusCode = 200;
             return result;
         }
 
         [HttpGet("{id}")]
-        public ActionResult<Person?> GetById([FromRoute] int id)
+        public async Task<ActionResult<Person?>> GetById([FromRoute] int id)
         {
-            return _personService.GetPersonById(id);
+            return  await _personService.GetPersonById(id);
         }
 
         [HttpPost]
 
         [SwaggerResponse(statusCode: 201, type:typeof(Person))]
         [SwaggerResponse(statusCode: 400, type: typeof(MessageResponse))]
-        public ActionResult<dynamic> Create(PersonCreateDTO person)
+        public async Task<ActionResult<dynamic>> Create(PersonCreateDTO person)
         {
             try
             {              
-                return _personService.CreatePerson(person);
+                return await _personService.CreatePerson(person);
             }
             catch (InvalidIdException)
             {
@@ -56,11 +56,11 @@ namespace WebApplication4.Controllers
         [HttpPut]
         [SwaggerResponse(statusCode: 200, type: typeof(Person))]
         [SwaggerResponse(statusCode: 400, type: typeof(MessageResponse))]
-        public ActionResult<dynamic> Update(PersonUpdateDTO person)
+        public async Task<ActionResult<dynamic>> Update(PersonUpdateDTO person)
         {
             try
             {
-                var result = _personService.UpdatePerson(person);
+                var result = await _personService.UpdatePerson(person);
                 return result;
             }
             catch (InvalidIdException)
@@ -73,9 +73,9 @@ namespace WebApplication4.Controllers
         }
 
         [HttpDelete]        
-        public ActionResult<MessageResponse> Delete(int id)
+        public async Task<ActionResult<MessageResponse>> Delete(int id)
         {
-            bool sucsess = _personService.DeletePerson(id);
+            bool sucsess = await _personService.DeletePerson(id);
             if (sucsess)
             {
                 return Ok(new MessageResponse
@@ -91,11 +91,6 @@ namespace WebApplication4.Controllers
                 });
             }
         }
-
-
-
-
-
     }
 
 }

@@ -4,7 +4,7 @@ using WebApplication4.Repositories.Interfaces;
 
 namespace WebApplication4.Repositories.Implemetations
 {
-    public class PersonFileRepository : IPersonRepository
+    public class PersonFileRepository 
     {
         public Person CreatePerson(PersonCreateDTO personDTO)
         {

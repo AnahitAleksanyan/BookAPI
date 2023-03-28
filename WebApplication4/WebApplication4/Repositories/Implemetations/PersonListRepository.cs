@@ -43,12 +43,12 @@ namespace WebApplication4.Repositories.Implemetations
             }
         };
 
-        public IEnumerable<Person> GetPeople()
+        public async Task<IEnumerable<Person>> GetPeople()
         {
             return people;
         }
 
-        public Person? GetPersonById(int Id)
+        public async Task<Person?> GetPersonById(int Id)
         {
             bool Test(Person person)
             {
@@ -60,7 +60,7 @@ namespace WebApplication4.Repositories.Implemetations
         }
 
 
-        public Person CreatePerson(PersonCreateDTO personDTO)
+        public async Task<Person> CreatePerson(PersonCreateDTO personDTO)
         {
             Person person = personDTO.ToPerson();
 
@@ -77,9 +77,9 @@ namespace WebApplication4.Repositories.Implemetations
             return person;
         }
 
-        public Person UpdatePerson(PersonUpdateDTO personDTO)
+        public async Task<Person> UpdatePerson(PersonUpdateDTO personDTO)
         {
-            Person? person = GetPersonById(personDTO.Id);
+            Person? person = await  GetPersonById(personDTO.Id);
             if (person != null)
             {
                 person.Name = personDTO.Name;
@@ -91,7 +91,7 @@ namespace WebApplication4.Repositories.Implemetations
 
         }
 
-        public bool DeletePerson(int id)
+        public async Task<bool> DeletePerson(int id)
         {
             Person? person = people.Where(Person => Person.Id == id).FirstOrDefault();
             if (person != null)
@@ -103,7 +103,7 @@ namespace WebApplication4.Repositories.Implemetations
 
         }
 
-        public bool Exists(int id)
+        public async Task<bool> Exists(int id)
         {
             return people.Any(person => person.Id == id);
         }
