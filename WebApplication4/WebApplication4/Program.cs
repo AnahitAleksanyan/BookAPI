@@ -27,11 +27,12 @@ options.UseSqlServer(connection));
 // Add services to the container.
 
 
-builder.Services.AddScoped<IBookRepository, BookRepository>();
+builder.Services.AddScoped<IBookRepository, BookSQLRepository>();
 
+//ToDo add IPersonService
 builder.Services.AddScoped<IBookService, BookService>();
 
-builder.Services.AddScoped<IPersonRepository, PersonListRepository>();
+builder.Services.AddScoped<IPersonRepository, PersonSQLRepository>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

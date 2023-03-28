@@ -4,6 +4,7 @@ namespace WebApplication4.DTOs
 {
     public class PersonCreateDTO
     {
+        //ToDo In Create DTO we don't need Id
         public int Id { get; set; }
         public string Name { get; set; }
         public string Surname { get; set; }

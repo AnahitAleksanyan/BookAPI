@@ -47,12 +47,14 @@ namespace WebApplication4.Services.Implementations
 
         public async Task<bool> DeleteBook(int id)
         {
-           return await _bookSQLRepository.DeleteBook(id);
+            //ToDo first check if book exists
+            return await _bookSQLRepository.DeleteBook(id);
 
         }
 
         public async Task<Book?> GetBookById(int id)
         {
+            //ToDo first check if book exists
             return await _bookSQLRepository.GetBookById(id);
         }
 
@@ -98,7 +100,8 @@ namespace WebApplication4.Services.Implementations
             }
             else
             {
-               await _bookSQLRepository.DeleteAllBooksByAuthorId(authorId);
+                //ToDo return the result from DeleteAllBooksByAuthorId method
+                await _bookSQLRepository.DeleteAllBooksByAuthorId(authorId);
             }
             return true;
            

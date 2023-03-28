@@ -8,7 +8,6 @@ namespace WebApplication4.DTOs
         public string Description { get; set; }
         public int AuthorId { get; set; }
         public int PageCount { get; set; }
-        public DateTime CreatedDate { get; set; }
 
         public Book ToBook()
         {
@@ -18,7 +17,6 @@ namespace WebApplication4.DTOs
             book.Description = Description;
             book.AuthorId = AuthorId;
             book.PageCount = PageCount;
-            book.CreatedDate = CreatedDate;
             return book;
         }
 

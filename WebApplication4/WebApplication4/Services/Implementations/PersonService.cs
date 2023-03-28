@@ -44,6 +44,7 @@ namespace WebApplication4.Services.Implementations
             }
 
             Person person =  personDTO.ToPerson();
+            //ToDo this method should call repository create method
             return person;
         }
 
@@ -56,6 +57,7 @@ namespace WebApplication4.Services.Implementations
             ValidateNameAndSurname(personDTO.Name, personDTO.Surname);
 
             Person person = personDTO.ToPerson();
+            //ToDo this method should call repository update method
             return person;
         }
 

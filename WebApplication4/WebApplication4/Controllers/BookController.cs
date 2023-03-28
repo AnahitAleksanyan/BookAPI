@@ -22,9 +22,9 @@ namespace WebApplication4.Controllers
 
 
         [HttpGet]
-        public ActionResult<IEnumerable<Book>> GetAll()
+        public async Task<ActionResult<IEnumerable<Book>>> GetAll()
         {
-            return Ok(_bookService.GetBooks());
+            return Ok(await _bookService.GetBooks());
         }
 
         [HttpGet("{id}")]
