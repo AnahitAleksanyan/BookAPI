@@ -7,7 +7,7 @@ using WebApplication4.Services.Interfaces;
 namespace WebApplication4.Services.Implementations
 {
 
-   
+
     public class PersonService : IPersonService
     {
 
@@ -19,7 +19,7 @@ namespace WebApplication4.Services.Implementations
             _bookRepository = bookRepository;
             _personRepository = personRepository;
         }
-            
+
         private void ValidateNameAndSurname(in string name, in string surname)
         {
             if (name == null || name.Length < 2)
@@ -37,26 +37,26 @@ namespace WebApplication4.Services.Implementations
         public async Task<Person> CreatePerson(PersonCreateDTO personDTO)
         {
             ValidateNameAndSurname(personDTO.Name, personDTO.Surname);
-            
+
             if (personDTO.Age < 5 || personDTO.Age > 100)
             {
                 throw new CustomValidationException("invalid Age");
             }
-
-            Person person =  personDTO.ToPerson();
             //ToDo this method should call repository create method
-            return person;
+            var result = await _personRepository.CreatePerson(personDTO);
+            return result;
         }
 
         public async Task<Person> UpdatePerson(PersonUpdateDTO personDTO)
         {
-            if (personDTO.Id <= 0 )
+            if (personDTO.Id <= 0)
             {
                 throw new InvalidIdException();
             }
             ValidateNameAndSurname(personDTO.Name, personDTO.Surname);
 
             Person person = personDTO.ToPerson();
+            var result = await _personRepository.UpdatePerson(personDTO);
             //ToDo this method should call repository update method
             return person;
         }
@@ -87,12 +87,12 @@ namespace WebApplication4.Services.Implementations
                 await _personRepository.Exists(id);
                 return true;
             }
-           
+
         }
 
         public async Task<IEnumerable<Person>> GetPeople()
         {
-           return await _personRepository.GetPeople();
+            return await _personRepository.GetPeople();
         }
 
         public async Task<Person?> GetPersonById(int id)
@@ -103,11 +103,11 @@ namespace WebApplication4.Services.Implementations
             }
             else
             {
-               await  _personRepository.GetPersonById(id);
+                await _personRepository.GetPersonById(id);
             }
             return null;
         }
 
-       
+
     }
 }

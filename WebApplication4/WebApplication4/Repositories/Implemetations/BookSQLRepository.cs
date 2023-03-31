@@ -22,6 +22,7 @@ namespace WebApplication4.Repositories.Implemetations
             var book = bookDTO.ToBook();
             //ToDo for book asign createdOn as DateTime now
 
+            book.CreatedDate = DateTime.Now;
             _dbContext.Books.Add(book);
             await _dbContext.SaveChangesAsync();
 
@@ -31,17 +32,20 @@ namespace WebApplication4.Repositories.Implemetations
         public async Task<bool> DeleteAllBooksByAuthorId(int authorId)
         {
             //ToDo check if books are empty return false
-            _dbContext.Books.RemoveRange(await GetBooksByAuthor(authorId));
 
-            await _dbContext.SaveChangesAsync();
-            return true;
-
+            var books = GetBooksByAuthor(authorId).Result; // stex harc unim
+            if (books != null)
+            {
+                await _dbContext.SaveChangesAsync();
+                return true;
+            }
+            return false;
         }
 
         public async Task<bool> DeleteBook(int id)
         {
             //ToDo use FirstOrDefaultAsync 
-            Book? book = _dbContext.Books.Where(book => book.Id == id).FirstOrDefault();
+            Book? book = await _dbContext.Books.Where(book => book.Id == id).FirstOrDefaultAsync();
             if (book != null)
             {
                 _dbContext.Books.Remove(book);
@@ -60,7 +64,7 @@ namespace WebApplication4.Repositories.Implemetations
         public async Task<Book?> GetBookById(int id)
         {
             //ToDo use FirstOrDefaultAsync 
-            var book = _dbContext.Books.Where(book => book.Id == id).FirstOrDefault();
+            var book = await _dbContext.Books.Where(book => book.Id == id).FirstOrDefaultAsync();
             await _dbContext.SaveChangesAsync();
             return book;
 
@@ -69,19 +73,18 @@ namespace WebApplication4.Repositories.Implemetations
         public async Task<IEnumerable<Book>> GetBooks()
         {
             //ToDo add toListAsync
-            var books = _dbContext.Books.Where(_ => true);
+            var books = await _dbContext.Books.Where(_ => true).ToListAsync();
             //ToDo remove unnessesary SaveChangesAsync
-            await _dbContext.SaveChangesAsync();
             return books;
+
         }
 
         public async Task<IEnumerable<Book>> GetBooksByAuthor(int authorId)
         {
             //ToDo use ToListAsync
-            List<Book> list = _dbContext.Books.Where(book => book.AuthorId == authorId).ToList();
+            List<Book> list = await _dbContext.Books.Where(book => book.AuthorId == authorId).ToListAsync();
 
-            //ToDo remove unnessesary SaveChangesAsync
-            await _dbContext.SaveChangesAsync();
+            //ToDo remove unnessesary SaveChangesAsync         
 
             return list;
         }
@@ -100,7 +103,7 @@ namespace WebApplication4.Repositories.Implemetations
             else
             {
                 //ToDo don't throw exception in repository, just return bookDTO.ToBook()
-                throw new Exception();
+                return bookDTO.ToBook();
             }
         }
     }

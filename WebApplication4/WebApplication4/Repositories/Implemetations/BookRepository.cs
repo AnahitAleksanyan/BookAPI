@@ -44,7 +44,7 @@ namespace WebApplication4.Repositories.Implemetations
 
         public async Task<Book?> GetBookById(int id)
         {
-            var book =books.Where(book => book.Id == id).FirstOrDefault();
+            var book = books.Where(book => book.Id == id).FirstOrDefault();
             return book;
         }
 
@@ -86,13 +86,12 @@ namespace WebApplication4.Repositories.Implemetations
 
         public async  Task<bool> DeleteBook(int id)
         {
-            Book? book = books.Where(book => book.Id == id).FirstOrDefault();
+            Book? book =  books.Where(book => book.Id == id).FirstOrDefault();
             if (book != null)
             {
-                books.Remove(book);
+                books.Remove(book); 
                 return true;
             }
-
             return false;
         }
 

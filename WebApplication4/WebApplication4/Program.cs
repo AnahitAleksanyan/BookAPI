@@ -30,7 +30,9 @@ options.UseSqlServer(connection));
 builder.Services.AddScoped<IBookRepository, BookSQLRepository>();
 
 //ToDo add IPersonService
+
 builder.Services.AddScoped<IBookService, BookService>();
+builder.Services.AddScoped<IPersonService, PersonService>();
 
 builder.Services.AddScoped<IPersonRepository, PersonSQLRepository>();
 

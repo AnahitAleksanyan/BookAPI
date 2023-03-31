@@ -105,7 +105,8 @@ namespace WebApplication4.Repositories.Implemetations
 
         public async Task<bool> Exists(int id)
         {
-            return people.Any(person => person.Id == id);
+           return  people.Any(person => person.Id == id);
+            
         }
     }
 }

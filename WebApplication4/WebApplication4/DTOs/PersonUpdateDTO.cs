@@ -5,7 +5,7 @@ namespace WebApplication4.DTOs
     public class PersonUpdateDTO
     {
         public int Id { get; set; }
-        public string Name { get; set; }
+        public string Name{ get; set; }
         public string Surname { get; set; }
 
         public Person ToPerson()
