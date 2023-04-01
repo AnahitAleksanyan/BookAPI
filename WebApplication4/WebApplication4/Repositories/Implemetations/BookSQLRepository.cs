@@ -66,7 +66,7 @@ namespace WebApplication4.Repositories.Implemetations
 
         public async Task<IEnumerable<Book>> GetBooks()
         {
-            var books = await _dbContext.Books.Where(_ => true).ToListAsync();
+            var books = await _dbContext.Books.Include(b => b.Author).ToListAsync();
             return books;
 
         }
