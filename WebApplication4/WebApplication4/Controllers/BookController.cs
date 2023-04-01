@@ -15,7 +15,7 @@ namespace WebApplication4.Controllers
     {
         private readonly IBookService _bookService;
 
-        public BookController( IBookService bookService)
+        public BookController(IBookService bookService)
         {
             _bookService = bookService;
         }
@@ -30,7 +30,18 @@ namespace WebApplication4.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Book?>> GetById([FromRoute][Required] int id)
         {
-            return await _bookService.GetBookById(id);
+            try
+            {
+                return Ok(await _bookService.GetBookById(id));
+            }
+            catch (InvalidIdException)
+            {
+                return BadRequest(new MessageResponse()
+                {
+                    Message = "Id is invalid"
+                });
+            }
+
         }
 
         [HttpPost]
@@ -42,11 +53,10 @@ namespace WebApplication4.Controllers
             }
             catch (CustomValidationException ex)
             {
-                Response.StatusCode = 400;
-                return new MessageResponse()
+                return BadRequest(new MessageResponse()
                 {
                     Message = ex.Message,
-                };
+                });
             }
         }
 
@@ -54,7 +64,7 @@ namespace WebApplication4.Controllers
         public async Task<ActionResult<MessageResponse>> Delete([FromQuery][Required] int id)
 
         {
-            bool success = await  _bookService.DeleteBook(id);
+            bool success = await _bookService.DeleteBook(id);
             if (success)
             {
                 return Ok(new MessageResponse()
@@ -73,7 +83,7 @@ namespace WebApplication4.Controllers
         [HttpDelete("all")]
         public async Task<ActionResult<MessageResponse>> DeleteAllBooksByAuthorId(int authorId)
         {
-            bool IsDeleted =  await _bookService.DeleteAllBooksByAuthorId(authorId);
+            bool IsDeleted = await _bookService.DeleteAllBooksByAuthorId(authorId);
             try
             {
                 if (IsDeleted)
@@ -112,11 +122,17 @@ namespace WebApplication4.Controllers
             }
             catch (InvalidIdException)
             {
-                Response.StatusCode = 400;
-                return new MessageResponse()
+                return BadRequest(new MessageResponse()
                 {
                     Message = "Id is invalid"
-                };
+                });
+            }
+            catch (CustomValidationException ex)
+            {
+                return BadRequest(new MessageResponse()
+                {
+                    Message = ex.Message
+                });
             }
         }
 
@@ -127,7 +143,7 @@ namespace WebApplication4.Controllers
         {
             try
             {
-                return Created("",await _bookService.GetBooksByAuthor(id));
+                return Ok(await _bookService.GetBooksByAuthor(id));
             }
             catch (CustomValidationException ex)
             {

@@ -42,7 +42,6 @@ namespace WebApplication4.Services.Implementations
             {
                 throw new CustomValidationException("invalid Age");
             }
-            //ToDo this method should call repository create method
             var result = await _personRepository.CreatePerson(personDTO);
             return result;
         }
@@ -55,10 +54,8 @@ namespace WebApplication4.Services.Implementations
             }
             ValidateNameAndSurname(personDTO.Name, personDTO.Surname);
 
-            Person person = personDTO.ToPerson();
             var result = await _personRepository.UpdatePerson(personDTO);
-            //ToDo this method should call repository update method
-            return person;
+            return result;
         }
 
         public async Task<bool> DeletePerson(int id)
@@ -103,9 +100,15 @@ namespace WebApplication4.Services.Implementations
             }
             else
             {
-                await _personRepository.GetPersonById(id);
+                var result = await _personRepository.GetPersonById(id);
+
+                if (result == null)
+                {
+                    throw new InvalidIdException();
+                }
+
+                return result;
             }
-            return null;
         }
 
 

@@ -17,11 +17,11 @@ namespace WebApplication4.Controllers
 
         public PersonController(IPersonService personService)
         {
-            _personService = personService;    
+            _personService = personService;
         }
 
         [HttpGet]
-        public async Task< IEnumerable<Person>> GetAll()
+        public async Task<IEnumerable<Person>> GetAll()
         {
             var result = await _personService.GetPeople();
             Response.StatusCode = 200;
@@ -31,17 +31,28 @@ namespace WebApplication4.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Person?>> GetById([FromRoute] int id)
         {
-            return  await _personService.GetPersonById(id);
+            try
+            {
+                return await _personService.GetPersonById(id);
+            }
+            catch (InvalidIdException)
+            {
+                return BadRequest(new MessageResponse()
+                {
+                    Message = "Id is invalid"
+                });
+            }
+
         }
 
         [HttpPost]
 
-        [SwaggerResponse(statusCode: 201, type:typeof(Person))]
+        [SwaggerResponse(statusCode: 201, type: typeof(Person))]
         [SwaggerResponse(statusCode: 400, type: typeof(MessageResponse))]
         public async Task<ActionResult<dynamic>> Create(PersonCreateDTO person)
         {
             try
-            {              
+            {
                 return await _personService.CreatePerson(person);
             }
             catch (InvalidIdException)
@@ -49,6 +60,13 @@ namespace WebApplication4.Controllers
                 return BadRequest(new MessageResponse
                 {
                     Message = "invalid Id"
+                });
+            }
+            catch (CustomValidationException ex)
+            {
+                return BadRequest(new MessageResponse
+                {
+                    Message = ex.Message
                 });
             }
         }
@@ -72,7 +90,7 @@ namespace WebApplication4.Controllers
             }
         }
 
-        [HttpDelete]        
+        [HttpDelete]
         public async Task<ActionResult<MessageResponse>> Delete(int id)
         {
             bool sucsess = await _personService.DeletePerson(id);

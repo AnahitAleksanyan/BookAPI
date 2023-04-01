@@ -26,17 +26,17 @@ namespace WebApplication4.Services.Implementations
                 throw new CustomValidationException("Book name must has at least 2 character");
             }
 
-           await  ValidateAuthor(bookDTO.AuthorId);
+            await ValidateAuthor(bookDTO.AuthorId);
 
-             var  result = await _bookSQLRepository.CreateBook(bookDTO);
+            var result = await _bookSQLRepository.CreateBook(bookDTO);
             return result;
-                     
+
 
         }
 
         private async Task<bool> ValidateAuthor(int authorId)
         {
-            bool exists =await _personSQLRepository.Exists(authorId);
+            bool exists = await _personSQLRepository.Exists(authorId);
 
             if (!exists)
             {
@@ -47,29 +47,34 @@ namespace WebApplication4.Services.Implementations
 
         public async Task<bool> DeleteBook(int id)
         {
-            //ToDo first check if book exists
             return await _bookSQLRepository.DeleteBook(id);
-
         }
 
         public async Task<Book?> GetBookById(int id)
         {
-            //ToDo first check if book exists
-            return await _bookSQLRepository.GetBookById(id);
+            var result = await _bookSQLRepository.GetBookById(id);
+
+            if (result == null)
+            {
+                throw new InvalidIdException();
+            }
+
+            return result;
         }
 
         public async Task<IEnumerable<Book>> GetBooks()
         {
             return await _bookSQLRepository.GetBooks();
-       }
-              
+        }
+
 
         public async Task<Book> UpdateBook(BookUpdateDTO bookDTO)
         {
-            if (_bookSQLRepository.Exist(bookDTO.Id) == null)
+            var exists = await _bookSQLRepository.Exist(bookDTO.Id);
+            if (!exists)
             {
                 throw new CustomValidationException("the book is not exist");
-            };
+            }
 
             if (bookDTO.Name == null || bookDTO.Name.Length < 2)
             {
@@ -86,9 +91,9 @@ namespace WebApplication4.Services.Implementations
             return await _bookSQLRepository.UpdateBook(bookDTO);
         }
 
-        public async Task <IEnumerable<Book>> GetBooksByAuthor(int authorId)
+        public async Task<IEnumerable<Book>> GetBooksByAuthor(int authorId)
         {
-           await ValidateAuthor(authorId);
+            await ValidateAuthor(authorId);
             return await _bookSQLRepository.GetBooksByAuthor(authorId);
         }
 
@@ -100,11 +105,8 @@ namespace WebApplication4.Services.Implementations
             }
             else
             {
-                //ToDo return the result from DeleteAllBooksByAuthorId method
-                await _bookSQLRepository.DeleteAllBooksByAuthorId(authorId);
+                return await _bookSQLRepository.DeleteAllBooksByAuthorId(authorId);
             }
-            return true;
-           
         }
 
     }
