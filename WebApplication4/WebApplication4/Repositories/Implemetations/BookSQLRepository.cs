@@ -66,7 +66,11 @@ namespace WebApplication4.Repositories.Implemetations
 
         public async Task<IEnumerable<Book>> GetBooks()
         {
+<<<<<<< HEAD
             var books = await _dbContext.Books.Where(_ => true).Include(b => b.Author).ToListAsync();
+=======
+            var books = await _dbContext.Books.Include(b => b.Author).ToListAsync();
+>>>>>>> 45a8ea0203466428adc0a1db1750dfb0174e37f2
             return books;
 
         }
