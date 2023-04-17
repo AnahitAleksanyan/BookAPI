@@ -8,8 +8,6 @@ using WebApplication4.Models;
 using WebApplication4.Services.Implementations;
 using WebApplication4.Services.Interfaces;
 
-
-
 namespace WebApplication4.Controllers
 {
     [Route("api/[controller]")]

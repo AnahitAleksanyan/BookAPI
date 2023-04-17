@@ -96,7 +96,8 @@ namespace WebApplication4.Repositories.Implemetations
             Person? person = people.Where(Person => Person.Id == id).FirstOrDefault();
             if (person != null)
             {
-                people.Remove(person);
+               people.Remove(person);
+                
                 return true;
             }
             return false;

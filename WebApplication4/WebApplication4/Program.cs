@@ -33,6 +33,18 @@ builder.Services.AddScoped<IPersonService, PersonService>();
 
 builder.Services.AddScoped<IPersonRepository, PersonSQLRepository>();
 
+builder.Services.AddScoped<IStudentRepository, StudentRepository>();
+builder.Services.AddScoped<IStudentService, StudentService>();
+
+builder.Services.AddScoped<ICourseRepository, CourseRepository>();
+builder.Services.AddScoped<ICourseService,CourseService>();
+
+
+
+
+
+
+
 builder.Services.AddControllers().AddJsonOptions(x =>
                 x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
