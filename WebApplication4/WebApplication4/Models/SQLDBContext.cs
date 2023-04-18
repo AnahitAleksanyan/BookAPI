@@ -13,7 +13,7 @@ namespace WebApplication4.Models
         public DbSet<Course>Courses { get; set; }
 
                 
-        public DbSet<CourceStudentPairs> CourceStudentPairs { get; set; }
+        public DbSet<CourseStudentPairs> CourseStudentPairs { get; set; }
 
         public SQLDBContext(DbContextOptions<SQLDBContext> options)
             : base(options)
@@ -30,12 +30,13 @@ namespace WebApplication4.Models
                  HasForeignKey(b => b.AuthorId);
 
 
-
+            
             modelBuilder.Entity<Student>().
                 HasMany(s => s.Courses).
                 WithMany(c => c.Students).
-                UsingEntity(j => j.ToTable("CourseStudentPairs")).HasNoKey();
+                UsingEntity(pt => pt.ToTable("CourseStudentPairs"));
 
+                 
 
             
   
