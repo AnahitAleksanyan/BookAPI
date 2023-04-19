@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 using System.ComponentModel.DataAnnotations;
 using WebApplication4.DTOs;
 using WebApplication4.Exceptions;
@@ -58,7 +59,9 @@ namespace WebApplication4.Controllers
 
 
         [HttpDelete]
-        public async Task<ActionResult<MessageResponse>> DeleteStudent([FromRoute][Required]int id)
+        [SwaggerResponse(statusCode: 200, type: typeof(Student))]
+        [SwaggerResponse(statusCode: 400, type: typeof(MessageResponse))]
+        public async Task<ActionResult<MessageResponse>> DeleteStudent(int id)
         {
               bool sucsses = await _studentService.DeleteStudent(id);
                 if (sucsses)

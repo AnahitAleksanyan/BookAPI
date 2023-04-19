@@ -67,7 +67,5 @@ namespace WebApplication4.Services.Implementations
             }
             return await  _studentRepository.UpdateStudent(studentDTO);
         }
-    }
-
-        
+    }        
 }
