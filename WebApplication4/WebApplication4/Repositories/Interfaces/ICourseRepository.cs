@@ -5,6 +5,7 @@ namespace WebApplication4.Repositories.Interfaces
 {
     public interface ICourseRepository
     {
+        //ToDo Name must be plural
         Task<IEnumerable<Course>> GetCourse();
         Task<Course?> GetCourseById(int id);
         Task<Course> CreateCourse(CourseCreateDTO courseDTO);

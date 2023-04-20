@@ -21,6 +21,7 @@ namespace WebApplication4.Services.Implementations
             {
                 throw new CustomValidationException("Student Name must has at least 3 character");
             }
+            //ToDo Validation will not work because you need to use || instead of &&
             if (studentDTO.Age < 1 && studentDTO.Age > 120)
             {
                 throw new CustomValidationException("Student Age is invalid");
@@ -61,6 +62,7 @@ namespace WebApplication4.Services.Implementations
             {
                 throw new CustomValidationException("student Name has at least 3 charachter");
             }
+            //ToDo Validation will not work because you need to use || instead of &&
             if (studentDTO.Age < 1 && studentDTO.Age > 120)
             {
                 throw new CustomValidationException("the student age is a invalid");

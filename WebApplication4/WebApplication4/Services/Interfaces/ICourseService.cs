@@ -5,6 +5,7 @@ namespace WebApplication4.Services.Interfaces
 {
     public interface ICourseService
     {
+        //ToDo Name must be plural
         Task<IEnumerable<Course>> GetCourse();
         Task<Course?> GetCourseById(int id);
         Task<Course> CreateCourse(CourseCreateDTO courseDTO);

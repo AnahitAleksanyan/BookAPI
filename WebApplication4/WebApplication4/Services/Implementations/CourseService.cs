@@ -31,8 +31,9 @@ namespace WebApplication4.Services.Implementations
         public async Task<bool> DeleteCourse(int id)
         {
             return await _courseRepository.DeleteCourse(id);
-        }        
+        }
 
+        //ToDo Name must be plural
         public async Task<IEnumerable<Course>> GetCourse()
         {
             return await _courseRepository.GetCourse();

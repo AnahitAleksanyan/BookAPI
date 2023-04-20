@@ -22,10 +22,10 @@ namespace WebApplication4.Repositories.Implemetations
             return course;
         }
 
-       
+
         public async Task<bool> DeleteCourse(int id)
         {
-           Course? course = await  GetCourseById(id);
+            Course? course = await GetCourseById(id);
             if (course != null)
             {
                 _dbContext.Courses.Remove(course);
@@ -36,20 +36,22 @@ namespace WebApplication4.Repositories.Implemetations
 
         }
 
-        public async  Task<bool> Exist(int id)
+        public async Task<bool> Exist(int id)
         {
-            await  _dbContext.Courses.AnyAsync(c => c.Id == id);
+            //ToDo the result of AnyAsync function isn't used. Return the result, instead of returning just static true
+            await _dbContext.Courses.AnyAsync(c => c.Id == id);
             return true;
         }
 
+        //ToDo Name must be plural
         public async Task<IEnumerable<Course>> GetCourse()
         {
-          return await  _dbContext.Courses.Where(_ => true).ToListAsync();
+            return await _dbContext.Courses.Where(_ => true).ToListAsync();
         }
 
         public async Task<Course?> GetCourseById(int id)
         {
-          return await _dbContext.Courses.Where(c => c.Id == id).FirstOrDefaultAsync();
+            return await _dbContext.Courses.Where(c => c.Id == id).FirstOrDefaultAsync();
         }
 
         public async Task<Course> UpdateCourse(CourseUpdateDTO courseDTO)
