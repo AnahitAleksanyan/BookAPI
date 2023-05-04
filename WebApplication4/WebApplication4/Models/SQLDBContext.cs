@@ -8,6 +8,7 @@ namespace WebApplication4.Models
         public DbSet<Person> People { get; set; }
         public DbSet<Student> Students { get; set; }
         public DbSet<Course> Courses { get; set; }
+        public DbSet<Enrollment> Enrollment { get; set; }
 
         public SQLDBContext(DbContextOptions<SQLDBContext> options)
             : base(options)
@@ -25,17 +26,21 @@ namespace WebApplication4.Models
 
             modelBuilder.Entity<Course>().
                 HasMany(c => c.Students).
-                WithMany(s => s.Courses).
-                UsingEntity(j => j.ToTable("Enrollment"));
+                WithMany(s => s.Courses)
+                .UsingEntity<Enrollment>(
+                   j => j
+                    .HasOne(pt => pt.Student)
+                    .WithMany(t => t.Enrollments)
+                    .HasForeignKey(pt => pt.StudentId),
+                j => j
+                    .HasOne(pt => pt.Course)
+                    .WithMany(p => p.Enrollments)
+                    .HasForeignKey(pt => pt.CourseId),
+                j =>
+                {
+                    j.HasKey(t => new { t.CourseId, t.StudentId });
+                    j.ToTable("Enrollments");
+                });
         }
-
-
-
     }
-
-
-
-
-
-
 }

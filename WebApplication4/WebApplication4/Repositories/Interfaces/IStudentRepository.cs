@@ -11,5 +11,6 @@ namespace WebApplication4.Repositories.Interfaces
         Task<Student> UpdateStudent(StudentUpdateDTO studentDTO);
         Task<bool> DeleteStudent(int id);
         Task<bool> Exist(int id);
+        Task<List<Student>> GetStudentsByCourseId(int courseId);
     }
 }

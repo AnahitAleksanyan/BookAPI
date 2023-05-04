@@ -44,7 +44,7 @@ namespace WebApplication4.Repositories.Implemetations
         }
 
         //ToDo Name must be plural
-        public async Task<IEnumerable<Course>> GetCourse()
+        public async Task<IEnumerable<Course>> GetCourses()
         {
             return await _dbContext.Courses.Where(_ => true).ToListAsync();
         }

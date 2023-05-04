@@ -26,13 +26,15 @@ namespace WebApplication4.Controllers
         }
 
         [HttpGet]
+        //api/course GET
         public async Task<ActionResult<IEnumerable<Course>>> GetCourse()
         {
             return Ok(await _courseService.GetCourses());
         }
 
-        [HttpGet]
-        public async Task<ActionResult<Student>> GetCourseById(int id)
+        [HttpGet("{id}")]
+        //api/course/2 GET
+        public async Task<ActionResult<Student>> GetCourseById([FromRoute]int id)
         {
             try
             {
@@ -62,45 +64,6 @@ namespace WebApplication4.Controllers
                 });
             }
         }
-        [HttpPost]
-        public async Task<ActionResult<int>> CreateCourseAssignStudent([FromBody] int courseId, int studentId)
-        {
-            try
-            {
-               await _courseService.GetCourseById(courseId);
-               await _studentService.GetStudentById(studentId);
-               Ok(courseId);
-               Ok(studentId);           
-              
-               
-                
-            }
-            catch
-            {
-                return BadRequest(new MessageResponse
-                {
-                    Message = "invalid Id"
-                });
-
-            }
-
-        }
-        [HttpGet]
-        public async Task<ActionResult<Course>> GetStudentCourses(int studentId)
-        {
-
-
-        }
-
-        [HttpGet]
-        public async Task<ActionResult<Student>> GetCourseStudents(int courseId)
-        {
-
-        }
-
-
-       
-
 
         [HttpPut]
         public async Task<ActionResult<Course>> Update(CourseUpdateDTO course)
@@ -143,6 +106,54 @@ namespace WebApplication4.Controllers
                 return BadRequest(new MessageResponse()
                 {
                     Message = "Couldn't delete the course"
+                });
+            }
+        }
+
+        //api/course/assign-student POST
+        [HttpPost("assign-student")]
+        public async Task<ActionResult<MessageResponse>> AssignStudent(EnrollmentCreateDTO enrollmentCreateDTO)
+        {
+            try
+            {
+                var success = await _courseService.AssignStudent(enrollmentCreateDTO);
+                if (success)
+                {
+                    return Ok(new MessageResponse()
+                    {
+                        Message = "Enrollment was successfully created."
+                    });
+                }
+                return BadRequest(new MessageResponse()
+                {
+                    Message = "Something went wrong."
+                });
+            }
+            catch (CustomValidationException ex)
+            {
+                return BadRequest(new MessageResponse()
+                {
+                    Message = ex.Message
+                });
+            }
+        }
+
+        //api/course/students?courseId=8 POST
+        [HttpPost("students")]
+        [SwaggerResponse(statusCode: 200, type: typeof(List<Student>))]
+        [SwaggerResponse(statusCode: 400, type: typeof(MessageResponse))]
+        public async Task<ActionResult<List<Student>>> GetCourseStudents([FromQuery][Required]int id)
+        {
+            try
+            {
+                var students = await _courseService.GetCourseStudents(id);
+                return Ok(students);
+            }
+            catch (CustomValidationException ex)
+            {
+                return BadRequest(new MessageResponse()
+                {
+                    Message = ex.Message
                 });
             }
         }

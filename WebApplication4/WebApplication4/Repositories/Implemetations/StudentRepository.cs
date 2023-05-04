@@ -12,18 +12,18 @@ namespace WebApplication4.Repositories.Implemetations
 
         public StudentRepository(SQLDBContext context)
         {
-             _dbContext = context;
+            _dbContext = context;
         }
 
-        public async  Task<Student> CreateStudent(StudentCreateDTO studentDTO)
+        public async Task<Student> CreateStudent(StudentCreateDTO studentDTO)
         {
             var student = studentDTO.ToStudent();
             _dbContext.Students.Add(student);
             await _dbContext.SaveChangesAsync();
-            return student;      
+            return student;
         }
 
-        public async  Task<bool> DeleteStudent(int id)
+        public async Task<bool> DeleteStudent(int id)
         {
             Student? student = _dbContext.Students.Where(student => student.Id == id).FirstOrDefault();
             if (student != null)
@@ -37,7 +37,7 @@ namespace WebApplication4.Repositories.Implemetations
 
         public Task<bool> Exist(int id)
         {
-           return  _dbContext.Students.AnyAsync(student => student.Id == id);
+            return _dbContext.Students.AnyAsync(student => student.Id == id);
         }
 
         public async Task<IEnumerable<Student>> GetStudent()
@@ -45,12 +45,12 @@ namespace WebApplication4.Repositories.Implemetations
             var students = await _dbContext.Students.Where(_ => true).ToListAsync();
             return students;
         }
-       
+
         public async Task<Student?> GetStudentById(int id)
         {
             var student = await _dbContext.Students.Where(student => student.Id == id).FirstOrDefaultAsync();
             return student;
-        } 
+        }
 
         public async Task<Student> UpdateStudent(StudentUpdateDTO studentDTO)
         {
@@ -59,7 +59,7 @@ namespace WebApplication4.Repositories.Implemetations
             {
                 student.Name = studentDTO.Name;
                 student.Surname = studentDTO.Surname;
-                student.Age = studentDTO.Age;   
+                student.Age = studentDTO.Age;
                 await _dbContext.SaveChangesAsync();
                 return student;
             }
@@ -68,6 +68,27 @@ namespace WebApplication4.Repositories.Implemetations
                 return studentDTO.ToStudent();
             }
 
+        }
+
+        public async Task<List<Student>> GetStudentsByCourseId(int courseId)
+        {
+            List<Student> students = new List<Student>();
+
+            List<Enrollment> enrollments = await _dbContext.Enrollment.Where(e => e.CourseId == courseId).ToListAsync();
+
+            foreach (var enrollment in enrollments)
+            {
+                int studnetId = enrollment.StudentId;
+
+                Student? student = await _dbContext.Students.Where(s => s.Id == studnetId).FirstOrDefaultAsync();
+
+                if (student != null)
+                {
+                    students.Add(student);
+                }
+            }
+
+            return students;
         }
     }
 }
