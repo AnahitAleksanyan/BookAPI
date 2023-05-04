@@ -63,38 +63,47 @@ namespace WebApplication4.Controllers
         [SwaggerResponse(statusCode: 400, type: typeof(MessageResponse))]
         public async Task<ActionResult<MessageResponse>> DeleteStudent(int id)
         {
-              bool sucsses = await _studentService.DeleteStudent(id);
-                if (sucsses)
+            bool sucsses = await _studentService.DeleteStudent(id);
+            if (sucsses)
+            {
+                return Ok(new MessageResponse()
                 {
-                    return Ok(new MessageResponse()
-                    {
-                        Message = "the Student has deleted"
-                    });
-                }
-                else
+                    Message = "the Student has deleted"
+                });
+            }
+            else
+            {
+                return BadRequest(new MessageResponse()
                 {
-                    return BadRequest(new MessageResponse()
-                    {
-                        Message = "Could not  delete student"
-                    });
-                }
-          
+                    Message = "Could not  delete student"
+                });
+            }
+
+        }
+
+        [HttpPut]
+        public async Task<ActionResult<Student>> UpdateStudent(StudentUpdateDTO studentDTO)
+        {
+            try
+            {
+                return Ok(await _studentService.UpdateStudent(studentDTO));
+            }
+            catch (InvalidIdException)
+            {
+                return BadRequest(new MessageResponse
+                {
+                    Message = "Invalid Id"
+                });
+            }
+            catch (CustomValidationException ex)
+            {
+                return BadRequest(new MessageResponse
+                {
+                    Message = ex.Message
+                });
+            }
         }
     }
 
-    namespace WebApplication4.Controllers
-    {
-        [Route("api/[controller]")]
-        [ApiController]
-        public class StudentController : ControllerBase
-        {
-            private readonly SQLDBContext _dbContext;
-            public StudentController(SQLDBContext sqlDBContext)
-            {
-                _dbContext = sqlDBContext;
-            }       
-                     
-          
-        }
-    }
+
 }

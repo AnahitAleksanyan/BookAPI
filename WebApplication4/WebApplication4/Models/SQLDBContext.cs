@@ -26,8 +26,11 @@ namespace WebApplication4.Models
             modelBuilder.Entity<Course>().
                 HasMany(c => c.Students).
                 WithMany(s => s.Courses).
-                UsingEntity(j => j.ToTable("CourseStudentPairs"));
+                UsingEntity(j => j.ToTable("Enrollment"));
         }
+
+
+
     }
 
 

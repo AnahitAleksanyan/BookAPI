@@ -34,9 +34,9 @@ namespace WebApplication4.Services.Implementations
         }
 
         //ToDo Name must be plural
-        public async Task<IEnumerable<Course>> GetCourse()
+        public async Task<IEnumerable<Course>> GetCourses()
         {
-            return await _courseRepository.GetCourse();
+            return await _courseRepository.GetCourses();
         }
 
         public async Task<Course?> GetCourseById(int id)

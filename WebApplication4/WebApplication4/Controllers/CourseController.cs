@@ -16,15 +16,35 @@ namespace WebApplication4.Controllers
     {
         private readonly ICourseService _courseService;
 
-        public CourseController(ICourseService courseService)
+        private readonly IStudentService _studentService;
+
+        public CourseController(ICourseService courseService, IStudentService studentService)
         {
             _courseService = courseService;
+            _studentService = studentService;
+
         }
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Course>>> GetCourse()
         {
-            return Ok(await _courseService.GetCourse());
+            return Ok(await _courseService.GetCourses());
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<Student>> GetCourseById(int id)
+        {
+            try
+            {
+                return Ok(await _courseService.GetCourseById(id));
+            }
+            catch(InvalidIdException)
+            {
+                return BadRequest(new MessageResponse
+                {
+                    Message = "Invalid Ids"
+                });
+            }
         }
 
         [HttpPost]
@@ -42,6 +62,44 @@ namespace WebApplication4.Controllers
                 });
             }
         }
+        [HttpPost]
+        public async Task<ActionResult<int>> CreateCourseAssignStudent([FromBody] int courseId, int studentId)
+        {
+            try
+            {
+               await _courseService.GetCourseById(courseId);
+               await _studentService.GetStudentById(studentId);
+               Ok(courseId);
+               Ok(studentId);           
+              
+               
+                
+            }
+            catch
+            {
+                return BadRequest(new MessageResponse
+                {
+                    Message = "invalid Id"
+                });
+
+            }
+
+        }
+        [HttpGet]
+        public async Task<ActionResult<Course>> GetStudentCourses(int studentId)
+        {
+
+
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<Student>> GetCourseStudents(int courseId)
+        {
+
+        }
+
+
+       
 
 
         [HttpPut]

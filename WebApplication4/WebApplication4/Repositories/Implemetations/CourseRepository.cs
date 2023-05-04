@@ -39,8 +39,8 @@ namespace WebApplication4.Repositories.Implemetations
         public async Task<bool> Exist(int id)
         {
             //ToDo the result of AnyAsync function isn't used. Return the result, instead of returning just static true
-            await _dbContext.Courses.AnyAsync(c => c.Id == id);
-            return true;
+          return  await _dbContext.Courses.AnyAsync(c => c.Id == id);
+            
         }
 
         //ToDo Name must be plural
