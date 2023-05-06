@@ -10,6 +10,10 @@ namespace WebApplication4.Services.Interfaces
         Task<Student> CreateStudent(StudentCreateDTO studentDTO);
         Task<Student> UpdateStudent(StudentUpdateDTO studentDTO);
         Task<bool> DeleteStudent(int id);
+
+        Task<List<Course>> GetStudentCourses(int studentId);
+
+        Task<bool> AssignCourse(EnrollmentCreateDTO enrollmentCreateDTO);
         
     }
 }

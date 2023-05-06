@@ -80,7 +80,6 @@ namespace WebApplication4.Controllers
             }
 
         }
-
         [HttpPut]
         public async Task<ActionResult<Student>> UpdateStudent(StudentUpdateDTO studentDTO)
         {
@@ -103,7 +102,57 @@ namespace WebApplication4.Controllers
                 });
             }
         }
-    }
 
+        //api/Student/courses? studentId = 1 
+
+        [HttpPost("courses")]
+        [SwaggerResponse(statusCode: 200, type: typeof(List<Course>))]
+        [SwaggerResponse(statusCode: 400, type: typeof(MessageResponse))]
+        public async Task<ActionResult<List<Course>>> GetStudentCourses([FromQuery][Required] int studentId)
+        {
+            try
+            {
+                var courses = await _studentService.GetStudentCourses(studentId);
+                return Ok(courses);
+            }
+            catch (CustomValidationException ex)
+            {
+                return BadRequest(new MessageResponse
+                {
+                    Message = ex.Message
+                });
+            }
+        }
+
+        // api / Student/Assign-Course
+        [HttpPost("assign-course")]
+
+        public async Task<ActionResult<MessageResponse>> AssignCourse(EnrollmentCreateDTO enrollmentCreateDTO)
+        {
+            try
+            {
+                bool sucsses = await _studentService.AssignCourse(enrollmentCreateDTO);
+                if (sucsses)
+                {
+                    return Ok(new MessageResponse
+                    {
+                        Message = "Created"
+                    });
+                }
+                return BadRequest(new MessageResponse
+                {
+                    Message = "Does not created"
+                });
+            }
+            catch (CustomValidationException ex)
+            {
+                return BadRequest(new MessageResponse
+                {
+                    Message = ex.Message
+                });
+
+            }
+        }
+    }
 
 }

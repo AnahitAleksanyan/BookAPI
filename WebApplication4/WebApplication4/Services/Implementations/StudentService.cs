@@ -10,10 +10,16 @@ namespace WebApplication4.Services.Implementations
     public class StudentService : IStudentService
     {
         private readonly IStudentRepository _studentRepository;
+        private readonly ICourseRepository _courseRepository;
 
-        public StudentService(IStudentRepository studentRepository)
+        private readonly IEnrollmentsRepository _enrollmentsRepository;
+
+        public StudentService(IStudentRepository studentRepository, ICourseRepository courseRepository,IEnrollmentsRepository enrollmentsRepository)
         {
             _studentRepository = studentRepository;
+            _courseRepository = courseRepository; 
+            _enrollmentsRepository = enrollmentsRepository; 
+
         }
         public async Task<Student> CreateStudent(StudentCreateDTO studentDTO)
         {
@@ -21,7 +27,7 @@ namespace WebApplication4.Services.Implementations
             {
                 throw new CustomValidationException("Student Name must has at least 3 character");
             }
-            //ToDo Validation will not work because you need to use || instead of &&
+          
             if (studentDTO.Age < 1 || studentDTO.Age > 120)
             {
                 throw new CustomValidationException("Student Age is invalid");
@@ -51,6 +57,8 @@ namespace WebApplication4.Services.Implementations
             return result;
         }
 
+       
+
         public async  Task<Student> UpdateStudent(StudentUpdateDTO studentDTO)
         {
             var exists = await _studentRepository.Exist(studentDTO.Id);
@@ -62,12 +70,45 @@ namespace WebApplication4.Services.Implementations
             {
                 throw new CustomValidationException("student Name has at least 3 charachter");
             }
-            //ToDo Validation will not work because you need to use || instead of &&
+            
             if (studentDTO.Age < 1 || studentDTO.Age > 120)
             {
                 throw new CustomValidationException("the student age is a invalid");
             }
             return await  _studentRepository.UpdateStudent(studentDTO);
+        }
+
+        public async  Task<List<Course>> GetStudentCourses(int studentId)
+        {
+            bool studentExists = await _studentRepository.Exist(studentId);
+            if (!studentExists)
+            {
+                throw new CustomValidationException("student does not exist");
+            }
+
+            return await _courseRepository.GetCoursesByStudentId(studentId);
+        }
+
+        public async Task<bool> AssignCourse(EnrollmentCreateDTO enrollmentDTO)
+        {
+            var student = await _studentRepository.Exist(enrollmentDTO.StudentId);
+            if (!student)
+            {
+                throw new CustomValidationException("StudentId is invalid");
+            }
+            var course = await _courseRepository.Exist(enrollmentDTO.CourseId);
+            if (!course)
+            {
+                throw new CustomValidationException("CourseId is invalid");
+            }
+
+             Enrollment enrollment = await _enrollmentsRepository.CreateEnrollment(enrollmentDTO);
+            if (enrollment != null)
+            {
+                return true;
+            }
+            return false;
+
         }
     }        
 }

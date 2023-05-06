@@ -38,12 +38,12 @@ namespace WebApplication4.Repositories.Implemetations
 
         public async Task<bool> Exist(int id)
         {
-            //ToDo the result of AnyAsync function isn't used. Return the result, instead of returning just static true
+           
           return  await _dbContext.Courses.AnyAsync(c => c.Id == id);
             
         }
 
-        //ToDo Name must be plural
+        
         public async Task<IEnumerable<Course>> GetCourses()
         {
             return await _dbContext.Courses.Where(_ => true).ToListAsync();
@@ -68,5 +68,24 @@ namespace WebApplication4.Repositories.Implemetations
                 return courseDTO.ToCourse();
             }
         }
+
+        public async  Task<List<Course>> GetCoursesByStudentId(int studentId)
+        {
+            List<Course> courses = new List<Course>();
+            
+            List<Enrollment> enrollments = await _dbContext.Enrollment.Where(e => e.StudentId == studentId).ToListAsync();
+
+            foreach (var enrollment in enrollments)
+            {                            
+                Course? Course =  await _dbContext.Courses.Where(c => c.Id == enrollment.CourseId).FirstOrDefaultAsync();
+                if (Course != null)
+                {
+                    courses.Add(Course);
+                }
+            }
+            return courses;
+        }
+
+
     }
 }

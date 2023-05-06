@@ -39,7 +39,7 @@ namespace WebApplication4.Services.Implementations
             return await _courseRepository.DeleteCourse(id);
         }
 
-        //ToDo Name must be plural
+       
         public async Task<IEnumerable<Course>> GetCourses()
         {
             return await _courseRepository.GetCourses();
@@ -103,7 +103,6 @@ namespace WebApplication4.Services.Implementations
             {
                 throw new CustomValidationException("CourseId is invalid.");
             }
-
             return await _studentRepository.GetStudentsByCourseId(courseId);
         }
     }
