@@ -73,19 +73,13 @@ namespace WebApplication4.Repositories.Implemetations
         public async Task<List<Student>> GetStudentsByCourseId(int courseId)
         {
             List<Student> students = new List<Student>();
+            
 
-            List<Enrollment> enrollments = await _dbContext.Enrollment.Where(e => e.CourseId == courseId).ToListAsync();
-
+            List<Enrollment> enrollments = await _dbContext.Enrollment.Where(e => e.CourseId == courseId).Include(e => e.Student).ToListAsync();
+            
             foreach (var enrollment in enrollments)
-            {
-                int studnetId = enrollment.StudentId;
-
-                Student? student = await _dbContext.Students.Where(s => s.Id == studnetId).FirstOrDefaultAsync();
-
-                if (student != null)
-                {
-                    students.Add(student);
-                }
+            {                               
+               students.Add(enrollment.Student);                
             }
             return students;
         }

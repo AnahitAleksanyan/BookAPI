@@ -39,7 +39,7 @@ namespace WebApplication4.Repositories.Implemetations
          
         public async Task<IEnumerable<Book>> GetBooks()
         {
-           return books;    //stex harc unim))
+           return books;    
         }
 
         public async Task<Book?> GetBookById(int id)

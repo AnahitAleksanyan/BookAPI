@@ -73,15 +73,11 @@ namespace WebApplication4.Repositories.Implemetations
         {
             List<Course> courses = new List<Course>();
             
-            List<Enrollment> enrollments = await _dbContext.Enrollment.Where(e => e.StudentId == studentId).ToListAsync();
+            List<Enrollment> enrollments = await _dbContext.Enrollment.Where(e => e.StudentId == studentId).Include(e => e.Course).ToListAsync();
 
             foreach (var enrollment in enrollments)
-            {                            
-                Course? Course =  await _dbContext.Courses.Where(c => c.Id == enrollment.CourseId).FirstOrDefaultAsync();
-                if (Course != null)
-                {
-                    courses.Add(Course);
-                }
+            {                         
+                courses.Add(enrollment.Course);                
             }
             return courses;
         }
