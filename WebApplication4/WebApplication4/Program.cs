@@ -40,6 +40,9 @@ builder.Services.AddScoped<ICourseRepository, CourseRepository>();
 builder.Services.AddScoped<ICourseService,CourseService>();
 
 builder.Services.AddScoped<IEnrollmentsRepository, EnrollmentsRepository>();
+builder.Services.AddScoped<IUserRepository, UserSQLRepository>();
+
+
 
 
 

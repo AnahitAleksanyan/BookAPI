@@ -10,6 +10,8 @@ namespace WebApplication4.Models
         public DbSet<Course> Courses { get; set; }
         public DbSet<Enrollment> Enrollment { get; set; }
 
+        public DbSet<User>Users { get; set; }   
+
         public SQLDBContext(DbContextOptions<SQLDBContext> options)
             : base(options)
         {

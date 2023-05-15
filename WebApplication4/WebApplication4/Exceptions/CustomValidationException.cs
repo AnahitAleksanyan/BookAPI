@@ -2,6 +2,13 @@
 {
     public class CustomValidationException : Exception
     {
+
+        public List<string> Messages { get; set; }
         public CustomValidationException(string message) : base(message) { }
+
+        public CustomValidationException(List<string> messages)
+        {
+            Messages = messages;
+        }
     }
 }
