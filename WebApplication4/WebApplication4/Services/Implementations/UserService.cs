@@ -18,13 +18,16 @@ namespace WebApplication4.Services.Implementations
         public async Task<User> Register(UserRegisterDTO userDTO)
         {
             List<string> mess = await ValidRegisterModel(userDTO);
+            //ToDo vochte stuge mess != null ayl mess.Count > 0 , qani vor mess@ misht null che
             if (mess != null)
             {
+                //ToDo CustomValidationException@ bdi stana nayev stringneri list
                 throw new CustomValidationException("");
             }
             return await _userSQLRepository.Register(userDTO);
         }
 
+        //ToDo functioni anun@ dir validateRegisterModel
         private async Task<List<string>> ValidRegisterModel(UserRegisterDTO userDTO)
         {
             List<string> messages = new List<string>();
@@ -33,6 +36,7 @@ namespace WebApplication4.Services.Implementations
             {
                 messages.Add("Name is invalid");
             }
+            //ToDo stex ete hankarc name@ null exav length@ kancheluc exception kqce, mtace inchx poxes
             if (userDTO.Name.Length < 2)
             {
                 messages.Add("Name characters are less than two");
@@ -41,6 +45,7 @@ namespace WebApplication4.Services.Implementations
             {
                 messages.Add("surname is invalid");
             }
+            //ToDo stex ete hankarc surname@ null exav length@ kancheluc exception kqce, mtace inchx poxes
             if (userDTO.Surname.Length < 3)
             {
                 messages.Add("surname charactersare less then 3");
@@ -52,6 +57,8 @@ namespace WebApplication4.Services.Implementations
             {
                 messages.Add("Email is invalid.");
             }
+
+            //Todo avelcra stugum or email@ bazayi mej arden goyutyun chuni
 
             Regex passwordRegex = new Regex(@"^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$");
             Match passwordMatch = passwordRegex.Match(userDTO.Password);

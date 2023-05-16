@@ -32,6 +32,7 @@ namespace WebApplication4.Controllers
 
             catch (CustomValidationException ex)
             {
+                //ToDo Stex bdi MessageResponse@ ira mej unena nayev messages vornor stringneri list e vorpesi CustomValidationExceptioni meji stringneri list@ inicializacnenq iran
                 return BadRequest(new MessageResponse
                 {
                     Message = ex.Message

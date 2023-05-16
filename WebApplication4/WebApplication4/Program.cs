@@ -41,6 +41,7 @@ builder.Services.AddScoped<ICourseService,CourseService>();
 
 builder.Services.AddScoped<IEnrollmentsRepository, EnrollmentsRepository>();
 builder.Services.AddScoped<IUserRepository, UserSQLRepository>();
+//ToDo IUserService@ grancac che
 
 
 
