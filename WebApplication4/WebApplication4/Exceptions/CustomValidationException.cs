@@ -6,9 +6,10 @@
         public List<string> Messages { get; set; }
         public CustomValidationException(string message) : base(message) { }
 
-        public CustomValidationException(List<string> messages)
+        public CustomValidationException(string message, List<string> messages)
         {
-            Messages = messages;
+           
+            this.Messages = messages;
         }
     }
 }

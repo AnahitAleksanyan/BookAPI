@@ -11,9 +11,7 @@ namespace WebApplication4.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-
         private readonly IUserService _userService;
-
         public UserController(IUserService userService)
         {
             _userService = userService;
@@ -26,13 +24,28 @@ namespace WebApplication4.Controllers
         {
             try
             {
-                return Ok( await _userService.Register(userDTO));
-
+                return Ok(await _userService.Register(userDTO));
             }
-
             catch (CustomValidationException ex)
             {
-                //ToDo Stex bdi MessageResponse@ ira mej unena nayev messages vornor stringneri list e vorpesi CustomValidationExceptioni meji stringneri list@ inicializacnenq iran
+                return BadRequest(new MessageResponse
+                {
+                    Messages = ex.Messages
+                });
+            }
+        }
+
+        [HttpPost("Login")]
+        [SwaggerResponse(statusCode:200, type: typeof(User))]
+        [SwaggerResponse(statusCode: 400, type: typeof(MessageResponse))]
+        public async Task<ActionResult<MessageResponse>> Login(UserLoginDTO userLoginDTO)
+        {
+            try
+            {
+                return Ok(await _userService.Login(userLoginDTO));
+            }
+            catch(CustomValidationException ex)
+            {
                 return BadRequest(new MessageResponse
                 {
                     Message = ex.Message
@@ -41,4 +54,6 @@ namespace WebApplication4.Controllers
         }
 
     }
+    
+
 }

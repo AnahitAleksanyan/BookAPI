@@ -5,6 +5,7 @@ namespace WebApplication4.Services.Interfaces
 {
     public interface IUserService
     {
-        Task<User> Register(UserRegisterDTO userDTO); 
+        Task<User> Register(UserRegisterDTO userDTO);
+        Task<User> Login(UserLoginDTO userLoginDTO);
     }
 }

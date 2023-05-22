@@ -17,18 +17,29 @@ namespace WebApplication4.Services.Implementations
 
         public async Task<User> Register(UserRegisterDTO userDTO)
         {
-            List<string> mess = await ValidRegisterModel(userDTO);
-            //ToDo vochte stuge mess != null ayl mess.Count > 0 , qani vor mess@ misht null che
-            if (mess != null)
+            List<string> mess = await ValidateRegisterModel(userDTO);
+            
+            if (mess.Count > 0)
             {
-                //ToDo CustomValidationException@ bdi stana nayev stringneri list
-                throw new CustomValidationException("");
+                foreach (string message in mess)
+                {
+                    throw new CustomValidationException(message);
+                }              
             }
             return await _userSQLRepository.Register(userDTO);
         }
 
-        //ToDo functioni anun@ dir validateRegisterModel
-        private async Task<List<string>> ValidRegisterModel(UserRegisterDTO userDTO)
+        public async Task<User> Login(UserLoginDTO userLoginDTO)
+        {
+           User userLogin =  await _userSQLRepository.Login(userLoginDTO);
+            if (userLogin == null)
+            {
+                throw new CustomValidationException("There is no registered user");
+            }
+            return userLogin;
+        }
+        
+        private async Task<List<string>> ValidateRegisterModel(UserRegisterDTO userDTO)
         {
             List<string> messages = new List<string>();
 
@@ -36,8 +47,8 @@ namespace WebApplication4.Services.Implementations
             {
                 messages.Add("Name is invalid");
             }
-            //ToDo stex ete hankarc name@ null exav length@ kancheluc exception kqce, mtace inchx poxes
-            if (userDTO.Name.Length < 2)
+            
+            if (userDTO.Name != null && userDTO.Name.Length < 2)
             {
                 messages.Add("Name characters are less than two");
             }
@@ -45,10 +56,10 @@ namespace WebApplication4.Services.Implementations
             {
                 messages.Add("surname is invalid");
             }
-            //ToDo stex ete hankarc surname@ null exav length@ kancheluc exception kqce, mtace inchx poxes
-            if (userDTO.Surname.Length < 3)
+            
+            if (userDTO.Surname != null && userDTO.Surname.Length < 3)
             {
-                messages.Add("surname charactersare less then 3");
+                messages.Add("surname characters are less then 3");
             }
 
             Regex emailRegex = new Regex(@"^([\\w\\.\\-]+)@([\\w\\-]+)((\\.(\\w){2,3})+)$");
@@ -58,8 +69,12 @@ namespace WebApplication4.Services.Implementations
                 messages.Add("Email is invalid.");
             }
 
-            //Todo avelcra stugum or email@ bazayi mej arden goyutyun chuni
-
+            bool emailExists = await _userSQLRepository.Exist(userDTO.Email);
+            if (emailExists)
+            {
+                messages.Add("Email is already exists in database");
+            }
+           
             Regex passwordRegex = new Regex(@"^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$");
             Match passwordMatch = passwordRegex.Match(userDTO.Password);
             if (!passwordMatch.Success)
