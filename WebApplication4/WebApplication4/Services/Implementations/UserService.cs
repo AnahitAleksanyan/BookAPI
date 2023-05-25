@@ -21,6 +21,7 @@ namespace WebApplication4.Services.Implementations
             
             if (mess.Count > 0)
             {
+                //ToDo vochte foreachov exception e petq shprtel ayl petq e mess@ poxancel CustomValidationException-i overloaded constructorin vornor petq e stexcel
                 foreach (string message in mess)
                 {
                     throw new CustomValidationException(message);
@@ -31,7 +32,7 @@ namespace WebApplication4.Services.Implementations
 
         public async Task<User> Login(UserLoginDTO userLoginDTO)
         {
-           User userLogin =  await _userSQLRepository.Login(userLoginDTO);
+           User? userLogin =  await _userSQLRepository.Login(userLoginDTO);
             if (userLogin == null)
             {
                 throw new CustomValidationException("There is no registered user");

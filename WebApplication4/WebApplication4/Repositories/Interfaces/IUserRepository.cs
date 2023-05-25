@@ -9,6 +9,6 @@ namespace WebApplication4.Repositories.Interfaces
 
         Task<bool> Exist(string email);
 
-        Task<User> Login(UserLoginDTO userLoginDTO);
+        Task<User?> Login(UserLoginDTO userLoginDTO);
     }
 }
