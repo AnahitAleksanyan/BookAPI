@@ -24,9 +24,9 @@ namespace WebApplication4.Services.Implementations
                 foreach (string message in mess)
                 {
                     throw new CustomValidationException(message);
-                }              
-            }
-            return await _userSQLRepository.Register(userDTO);
+                }
+            }           
+             return   await _userSQLRepository.Register(userDTO);                    
         }
 
         public async Task<User> Login(UserLoginDTO userLoginDTO)
