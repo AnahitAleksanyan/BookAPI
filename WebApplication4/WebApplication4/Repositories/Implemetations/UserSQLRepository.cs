@@ -32,10 +32,9 @@ namespace WebApplication4.Repositories.Implemetations
 
         public async Task<User?> Login(UserLoginDTO userLoginDTO)
         {
-            //ToDo ays qayl@ animast e
+           
             User user = userLoginDTO.ToUser();
-            //ToDo petq e lini ayspes ---- return await _dbContext.Users.Where(u => u.Email == userLoginDTO.Email && u.Password == userLoginDTO.Password).FirstOrDefaultAsync();
-            return await _dbContext.Users.Where(u => u.Email == user.Email && u.Password == user.Password).FirstOrDefaultAsync();
+            return await _dbContext.Users.Where(u => u.Email == userLoginDTO.Email && u.Password == userLoginDTO.Password).FirstOrDefaultAsync();
         }
     }
 } 

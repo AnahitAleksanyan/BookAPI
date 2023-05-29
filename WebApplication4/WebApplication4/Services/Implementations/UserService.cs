@@ -20,12 +20,8 @@ namespace WebApplication4.Services.Implementations
             List<string> mess = await ValidateRegisterModel(userDTO);
             
             if (mess.Count > 0)
-            {
-                //ToDo vochte foreachov exception e petq shprtel ayl petq e mess@ poxancel CustomValidationException-i overloaded constructorin vornor petq e stexcel
-                foreach (string message in mess)
-                {
-                    throw new CustomValidationException(message);
-                }
+            {                             
+               throw new CustomValidationException(mess);                
             }           
              return   await _userSQLRepository.Register(userDTO);                    
         }
@@ -63,7 +59,7 @@ namespace WebApplication4.Services.Implementations
                 messages.Add("surname characters are less then 3");
             }
 
-            Regex emailRegex = new Regex(@"^([\\w\\.\\-]+)@([\\w\\-]+)((\\.(\\w){2,3})+)$");
+            Regex emailRegex = new Regex(@"^([\w\.\-] +)@([\w\-] +)((\.(\w){ 2, 3 })+)$");
             Match emailMatch = emailRegex.Match(userDTO.Email);
             if (!emailMatch.Success)
             {

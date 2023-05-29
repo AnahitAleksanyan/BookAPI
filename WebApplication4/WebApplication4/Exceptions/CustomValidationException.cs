@@ -2,14 +2,14 @@
 {
     public class CustomValidationException : Exception
     {
-
+        public string Message { get; set; }
         public List<string> Messages { get; set; }
-        public CustomValidationException(string message) : base(message) { }
-
-        //ToDo ays constuctor@ chpetq e stana message, miyayn messages , qani vor du verevn arden unes message stacox constructor
-        public CustomValidationException(string message, List<string> messages)
+        public CustomValidationException(string message) 
         {
-           
+            Message = message;
+        }        
+        public CustomValidationException(List<string> messages)
+        {           
             this.Messages = messages;
         }
     }
