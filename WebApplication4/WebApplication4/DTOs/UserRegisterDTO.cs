@@ -10,15 +10,13 @@ namespace WebApplication4.DTOs
         public string Password { get; set; }
         public string ConfirmPassword { get; set; }
 
-
         public User ToUser()
         {
             User user = new User();
             user.Name = Name;   
             user.Surname = Surname;
             user.Email = Email;
-            user.Password = Password;
-            user.ConfirmPassword = ConfirmPassword;
+            user.Password = Password;            
             return user;
         }
     }

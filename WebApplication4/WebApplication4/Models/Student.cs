@@ -6,16 +6,8 @@
         public string Name { get; set; }
         public string Surname { get; set; }
         public int Age { get; set; }
-
-
         public int Grade { get; set; }
         public List<Course> Courses { get; set; }
         public List<Enrollment> Enrollments { get; set; } = new List<Enrollment>();
-
-
-
-
-
-
     }
 }

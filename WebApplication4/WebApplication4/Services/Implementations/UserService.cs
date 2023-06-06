@@ -27,7 +27,7 @@ namespace WebApplication4.Services.Implementations
         }
 
         public async Task<User> Login(UserLoginDTO userLoginDTO)
-        {
+        {           
            User? userLogin =  await _userSQLRepository.Login(userLoginDTO);
             if (userLogin == null)
             {
@@ -59,7 +59,7 @@ namespace WebApplication4.Services.Implementations
                 messages.Add("surname characters are less then 3");
             }
 
-            Regex emailRegex = new Regex(@"^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$");
+            Regex emailRegex = new Regex(@"^([\w\.\-] +)@([\w\-] +)((\.(\w){ 2, 3 })+)$");
             Match emailMatch = emailRegex.Match(userDTO.Email);
             if (!emailMatch.Success)
             {
