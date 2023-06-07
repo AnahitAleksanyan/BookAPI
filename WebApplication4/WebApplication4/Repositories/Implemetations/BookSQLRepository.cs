@@ -32,7 +32,7 @@ namespace WebApplication4.Repositories.Implemetations
             var books = await GetBooksByAuthor(authorId);
             if (books.Any())
             {
-                _dbContext.RemoveRange(books);
+                _dbContext.Books.RemoveRange(books);
                 await _dbContext.SaveChangesAsync();
                 return true;
             }
